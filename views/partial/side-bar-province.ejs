@@ -1,0 +1,27 @@
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-content">
+
+        <!-- User dropdown -->
+        <div class="user-menu dropdown">
+            <a href="/me/profile">
+                <div class="user-info">
+                    <%=user.employee_code%><span><%=user.name%></span>
+                </div>
+            </a>
+        </div>
+        <!-- /user dropdown -->
+
+
+        <!-- Main navigation -->
+        <ul class="navigation">
+            <li id="li-admin-employee"><a href="/employees/province"><span>Quản lý nhân viên</span> <i class="icon-users"></i></a></li>
+            <li id="li-admin-add-state"><a href="/state/province"><span>Quản lý tỉnh</span> <i class="icon-location"></i></a></li>
+            <li id="li-admin-statistical"><a href="#"><span>Thống kê</span> <i class="icon-stats-up"></i></a></li>
+            <li id="li-admin-logout"><a href="/logout"><span>Đăng xuất</span> <i class="icon-exit3"></i></a></li>
+        </ul>
+        <!-- /main navigation -->
+
+    </div>
+</div>
+<!-- /sidebar -->

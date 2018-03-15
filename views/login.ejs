@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=1,initial-scale=1,user-scalable=1"/>
+    <title>Login</title>
+
+    <link href="http://fonts.googleapis.com/css?family=Lato:100italic,100,300italic,300,400italic,400,700italic,700,900italic,900"
+          rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/custom.css"/>
+
+</head>
+<body>
+<div class="container">
+
+    <div class="row" id="pwd-container">
+        <div class="col-md-4"></div>
+
+        <div class="col-md-4">
+            <section class="login-form">
+                <form method="post" action="/login" role="login">
+                    <img src="http://vatm.vn/images/config/logo3_1461813552.png" class="img-responsive" alt=""/>
+                    <input name="username" placeholder="Enter username" required class="form-control input-lg"/>
+                    <input type="password" name="password" class="form-control input-lg" id="password"
+                           placeholder="Enter Password" required=""/>
+
+                    <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                    <div class="pwstrength_viewport_progress">
+                        <% if(message){ %>
+                        <div style="color: red;font-size: 15px;font-family: 'Courier New', Monospace"><%= message %></div>
+                        <% } %>
+                    </div>
+
+                </form>
+
+
+            </section>
+        </div>
+
+        <div class="col-md-4"></div>
+
+
+    </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="assets/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

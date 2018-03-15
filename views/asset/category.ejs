@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>Quản lý thuộc tính</title>
+
+    <link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/londinium-theme.css" rel="stylesheet" type="text/css">
+    <link href="/css/styles.css" rel="stylesheet" type="text/css">
+    <link href="/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="/css/icons.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/lobibox/lobibox.css">
+
+    <script type="text/javascript" src="/assets/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/jquery/dist/jquery-ui.min.js"></script>
+    <script src="/assets/lobibox/lobibox.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/charts/sparkline.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/uniform.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/select2.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/inputmask.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/autosize.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/inputlimit.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/listbox.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/multiselect.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/validate.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/tags.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/switch.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/uploader/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/uploader/plupload.queue.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/wysihtml5/wysihtml5.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/wysihtml5/toolbar.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/interface/daterangepicker.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/fancybox.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/moment.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/jgrowl.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/colorpicker.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/timepicker.min.js"></script>
+
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/application.js"></script>
+    <script type="text/javascript" src="/js/core/category.js"></script>
+</head>
+
+<body>
+<!-- Page container -->
+<div class="page-container">
+
+    <%- include ../partial/nav-bar.ejs %>
+    <%- include ../partial/side-bar.ejs %>
+
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal modal-demo" style="width: 30%">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h2 class="modal-title">CONFIRMATION!</h2>
+                        </div>
+
+                        <div class="modal-body with-padding">
+                            <p>Bạn có muốn xóa thuộc tính này không?</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary" id="confirm">Đồng ý</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h3>Quản lý danh mục</h3>
+            </div>
+        </div>
+        <!-- /page header -->
+
+
+
+
+        <!-- Page tabs -->
+        <div class="row">
+            <div class="col-md-6" style="padding-right: 0px">
+                <div class="panel panel-default" style="margin-bottom: 10px">
+                    <div class="panel-heading"><h6 class="panel-title">Danh sách danh mục</h6></div>
+                    <div class="table-responsive">
+                        <table class="table tbody-info-cates">
+                            <thead>
+                            <tr>
+                                <th class="col-md-2">STT</th>
+                                <th class="col-md-6">Tên danh mục</th>
+                                <th class="col-md-4">Danh sách thuộc tính</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody-info">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-5 col-md-offset-1" style="padding-left: 0px; display: none" id="form-add-property">
+                <div class="panel panel-default" style="margin-bottom: 10px">
+                    <div class="panel-heading"><h6 class="panel-title"></h6></div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="col-md-5">STT</th>
+                                <th class="col-md-5">Tên thuộc tính</th>
+                                <th class="col-md-2">Xóa</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody-info-properties">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Thuộc tính"
+                           id="property">
+                    <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" id="btn-add-property">Thêm
+                                            </button>
+                                        </span>
+                </div>
+            </div>
+
+            <!-- /row styling -->
+        </div>
+        <!-- /page content -->
+    </div>
+    <!-- /page container -->
+</div>
+</body>
+</html>

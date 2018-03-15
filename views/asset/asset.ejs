@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>Quản lý tài sản</title>
+
+    <link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/londinium-theme.css" rel="stylesheet" type="text/css">
+    <link href="/css/styles.css" rel="stylesheet" type="text/css">
+    <!--<link href="/css/icons.css" rel="stylesheet" type="text/css">-->
+    <link href="/css/icons.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/lobibox/lobibox.css">
+
+    <script type="text/javascript" src="/assets/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/jquery/dist/jquery-ui.min.js"></script>
+    <script src="/assets/lobibox/lobibox.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/charts/sparkline.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/uniform.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/select2.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/autosize.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/inputlimit.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/listbox.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/multiselect.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/validate.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/tags.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/switch.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/uploader/plupload.full.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/uploader/plupload.queue.min.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/forms/wysihtml5/wysihtml5.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/forms/wysihtml5/toolbar.js"></script>
+
+    <script type="text/javascript" src="/js/plugins/interface/daterangepicker.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/fancybox.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/moment.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/jgrowl.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/colorpicker.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/interface/timepicker.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/application.js"></script>
+    <script type="text/javascript" src="/js/core/asset.js"></script>
+
+    <link href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.css" rel="stylesheet" />
+    <script data-require="datatables@*" data-semver="1.10.12" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+    <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+    <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+    <script src='https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js'></script>
+    <script src='//cdn.datatables.net/buttons/1.2.1/js/buttons.flash.min.js'></script>
+
+
+
+</head>
+
+<body>
+<!-- Page container -->
+<div class="page-container">
+
+    <%- include ../partial/nav-bar.ejs %>
+    <%- include ../partial/side-bar.ejs %>
+
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal modal-demo" style="width: 30%">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h2 class="modal-title">CONFIRMATION!</h2>
+                        </div>
+
+                        <div class="modal-body with-padding">
+                            <p>Bạn có muốn xóa tài sản này không?</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary" id="confirm">Đồng ý</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h3>Quản lý tài sản</h3>
+            </div>
+            <div class="range" style="margin: 20px 0;">
+                <button class="btn btn-primary" id="btn-add-asset">Thêm</button>
+            </div>
+        </div>
+
+
+        <!-- Page tabs -->
+        <div class="tabbable page-tabs" id="div-tbl-info-asset">
+            <div class="tab-content">
+                <!-- Striped datatable inside panel -->
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4 class="panel-title">Thông tin tài sản</h4></div>
+                    <table id="tbl-info-asset" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="col-md-2">Tên tài sản</th>
+                            <th class="col-md-2">Hệ thống thiết bị</th>
+                            <th class="col-md-1">Serial Number</th>
+                            <th class="col-md-2">Đ/v quản lý</th>
+                            <th class="col-md-2">Đ/v sử dụng</th>
+                            <th class="col-md-2">Vị trí lắp đặt</th>
+                            <th class="col-md-1">Trạng thái</th>
+                            <th>Gói thầu</th>
+                            <th>Cái</th>
+                            <th>Số lượng</th>
+                            <th>Năm sử dụng</th>
+                            <th>Hãng sản xuất</th>
+                            <th>Nước sản xuất</th>
+                            <th>Ghi chú</th>
+                            <th class="col-md-1">Chi tiết</th>
+                            <th class="col-md-1">Xóa</th>
+                        </tr>
+                        </thead>
+                        <tbody id="body-info-asset">
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /striped datatable inside panel -->
+            </div>
+        </div>
+
+
+
+        <!--Form thêm tài sản-->
+        <form action="#" role="form" id="form-add-asset" style="display: none;">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h6 class="panel-title"><i class="icon-books"></i> Thêm thông tin</h6>
+
+                    <p class="display-block pull-right" style="padding-top: 10px; padding-right: 10px">(*): Thông tin
+                        bắt buộc phải điền</p></div>
+                <div class="panel-body">
+
+                    <!-- General information -->
+                    <div class="block-inner">
+                        <div class="block-inner">
+                            <h6 class="heading-hr">
+                                <i class="icon-credit"></i> Thông tin tài sản
+                                <small class="display-block">Thêm thông tin tài sản</small>
+                            </h6>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tên tài sản:(*)</label>
+                                    <input type="text" class="form-control" placeholder="Tên tài sản"
+                                           id="username">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Hệ thống thiết bị: </label>
+                                    <select data-placeholder="Phân quyền" id="select-category"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Gói thầu: </label>
+                                    <input type="text" class="form-control" placeholder="Gói thầu"
+                                           id="goi-thau">
+                                    <label id="label-status-goi-thau" class="status-input-label warning">
+                                        <i id="icon-status-goi-thau"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-goi-thau"></small>
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Đơn vị tính:</label>
+                                    <select data-placeholder="Năm sử dụng" id="select-unit"
+                                            class="form-control">
+                                        <option value="1">Cái</option>
+                                        <option value="2">Bao</option>
+                                        <option value="2">Thùng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Số lượng:</label>
+                                    <input type="text" class="form-control" placeholder="Số lượng" id="quantity">
+                                    <label id="label-status-quantity" class="status-input-label warning">
+                                        <i id="icon-status-quantity"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-quantity"></small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Năm sử dụng:</label>
+                                    <select data-placeholder="Năm sử dụng" id="select-year"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Serial Number (*):</label>
+                                    <input type="text" class="form-control" placeholder="Serial Number" id="serial">
+                                    <label id="label-status-serial" class="status-input-label warning">
+                                        <i id="icon-status-serial"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-serial"></small>
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Hãng sản xuất:</label>
+                                    <input type="text" class="form-control" placeholder="Hãng sản xuất"
+                                           id="brand">
+                                    <label id="label-status-brand"
+                                           class="status-input-label warning">
+                                        <i id="icon-status-brand"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-brand"></small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Nước sản xuất: </label>
+                                    <input type="text" class="form-control" placeholder="Nước sản xuất" id="country">
+                                    <label id="label-status-country" class="status-input-label warning">
+                                        <i id="icon-status-country"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-country"></small>
+                                    </label>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Đơn vị quản lý:</label>
+                                    <select data-placeholder="Phân quyền" id="select-manager"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Đơn vị sử dụng: </label>
+                                    <select data-placeholder="Phân quyền" id="select-use"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Vị trí lắp đặt:</label>
+                                    <select data-placeholder="Phân quyền" id="select-location"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tình trạng hoạt động: </label>
+                                    <select data-placeholder="Phân quyền" id="status"
+                                            class="form-control">
+                                        <option value="1">Đang hoạt động</option>
+                                        <option value="2">Đang sửa chữa</option>
+                                        <option value="3">Đang bảo hành</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Ghi chú:</label>
+                                    <input type="text" class="form-control" placeholder="Ghi chú"
+                                           id="note">
+                                    <label id="label-status-note"
+                                           class="status-input-label warning">
+                                        <i id="icon-status-note"
+                                           class="fa fa-times-circle-o warning"></i>
+                                        <small id="text-status-note"></small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <input type="button" value="Gửi" class="btn btn-primary pull-right" id="btn-submit-asset"/>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+        <!--Form sửa tài sản-->
+        <form action="#" role="form" id="form-edit-asset" style="display: none;">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h6 class="panel-title"><i class="icon-books"></i>Thêm thông tin</h6>
+
+                    <p class="display-block pull-right" style="padding-top: 10px; padding-right: 10px">(*): Thông tin
+                        bắt buộc phải điền</p></div>
+                <div class="panel-body">
+                    <!-- General information -->
+                    <div class="block-inner">
+                        <div class="block-inner">
+                            <h6 class="heading-hr">
+                                <i class="icon-credit"></i> Thông tin tài sản
+                                <small class="display-block">Thêm thông tin tài sản</small>
+                            </h6>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tên tài sản:</label>
+                                    <input type="text" class="form-control" placeholder="Tên tài sản"
+                                           id="username-edit">
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Hệ thống thiết bị: </label>
+                                    <select data-placeholder="Phân quyền" id="select-category-edit"
+                                            class="form-control">
+                                    </select>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Gói thầu: </label>
+                                    <input type="text" class="form-control" placeholder="Gói thầu"
+                                           id="goi-thau-edit">
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Đơn vị tính:</label>
+                                    <select data-placeholder="Năm sử dụng" id="select-unit-edit"
+                                            class="form-control">
+                                        <option value="1">Cái</option>
+                                        <option value="2">Bao</option>
+                                        <option value="2">Thùng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Số lượng:</label>
+                                    <input type="text" class="form-control" placeholder="Số lượng" id="quantity-edit">
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Năm sử dụng:</label>
+                                    <select data-placeholder="Năm sử dụng" id="select-year-edit"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Serial Number (*):</label>
+                                    <input type="text" class="form-control" placeholder="Serial Number" id="serial-edit">
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Hãng sản xuất:</label>
+                                    <input type="text" class="form-control" placeholder="Hãng sản xuất"
+                                           id="brand-edit">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Nước sản xuất: </label>
+                                    <input type="text" class="form-control" placeholder="Nước sản xuất" id="country-edit">
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Đơn vị quản lý:</label>
+                                    <select data-placeholder="Phân quyền" id="select-manager-edit"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Đơn vị sử dụng: </label>
+                                    <select data-placeholder="Phân quyền" id="select-user-edit"
+                                            class="form-control">
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Vị trí lắp đặt:</label>
+                                    <select data-placeholder="Phân quyền" id="select-location-edit"
+                                            class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tình trạng hoạt động: </label>
+                                    <select data-placeholder="Phân quyền" id="status-edit"
+                                            class="form-control">
+                                        <option value="1">Đang hoạt động</option>
+                                        <option value="2">Đang sửa chữa</option>
+                                        <option value="3">Đang bảo hành</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Ghi chú:</label>
+                                    <input type="text" class="form-control" placeholder="Ghi chú"
+                                           id="note-edit">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h6 class="panel-title"><i class="icon-table2"></i>Lịch sử thay đổi thông tin tài sản</h6>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table" id="tbl-asset-history">
+                                                <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên tài sản</th>
+                                                    <th>Hành động</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Thời gian</th>
+                                                    <th>Tác nhân</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+                        <input type="button" value="Sửa" class="btn btn-primary pull-right" id="btn-edit-asset"/>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /page content -->
+</div>
+<!-- /page container -->
+</body>
+</html>
