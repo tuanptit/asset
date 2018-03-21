@@ -89,6 +89,9 @@ module.exports = function (app, passport) {
         }
     });
 
+     // Upload to Import
+    app.post('/upload', isLoggedIn, assets.uploadFile)
+
      app.get('/view/asset', isEmployee, function (req, res) {
          res.render('asset/asset-view');
      })

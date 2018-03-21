@@ -49,5 +49,4 @@ app.use(passport.session());
 app.use(flash());
 require('./routes/index')(app, passport);
 
-
 module.exports = app;

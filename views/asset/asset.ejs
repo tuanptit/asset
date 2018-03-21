@@ -93,14 +93,52 @@
                 </div>
             </div>
         </div>
+
+        <!--Model UPLOAD-->
+
+        <div id="myUpload" class="modal fade" role="dialog">
+            <div class="modal modal-demo" style="width: 30%">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h2 class="modal-title">UPLOAD EXCEL FILE TO IMPORT DATA!</h2>
+                        </div>
+
+                        <div class="modal-body with-padding">
+                            <form action="upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+                                <div class="form-group">
+                                    <label for="">Chọn File</label>
+                                    <input type="file" class="form-control" name="file">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                                    <input type="submit" value="Upload" name="upload">
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
         <!-- Page header -->
         <div class="page-header">
             <div class="page-title">
                 <h3>Quản lý tài sản</h3>
             </div>
+
             <div class="range" style="margin: 20px 0;">
                 <button class="btn btn-primary" id="btn-add-asset">Thêm</button>
             </div>
+
+            <div class="range" style="margin: 20px 10px;">
+                <button class="btn btn-primary" data-toggle='modal' data-target='#myUpload' id="btn-import">Import</button>
+            </div>
+
         </div>
 
 
