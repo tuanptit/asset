@@ -11,7 +11,10 @@ var assetSchema = new Schema({
     unit: String,
     quantity:String,
     year: Number,
-    serial_number: String,
+    serial_number: {
+        type: String,
+        unique: true
+    },
     brand: String,
     country: String,
     manager: {

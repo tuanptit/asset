@@ -109,11 +109,11 @@
                             <form action="upload" method="POST" enctype="multipart/form-data" id="uploadForm">
                                 <div class="form-group">
                                     <label for="">Chọn File</label>
-                                    <input type="file" class="form-control" name="file">
+                                    <input type="file" class="form-control" name="file" id="file">
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="/file-1521624220161.xlsx">Download</a>
-                                    <input type="submit" value="Upload" name="upload">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                    <button type="button" class="btn btn-primary" id="btn-import">Đồng ý</button>
                                 </div>
                             </form>
                         </div>
@@ -126,6 +126,21 @@
             </div>
         </div>
         <!-- Page header -->
+
+        <div class="panel panel-default" style="margin-bottom:0px;border: none !important;">
+            <div class="panel-body" id="import-status">
+                <!--<div class="alert alert-danger fade in block-inner">-->
+                    <!--<button type="button" class="close" data-dismiss="alert">×</button>-->
+                    <!--<i class="icon-cancel-circle"></i> Error alert-->
+                <!--</div>-->
+
+                <!--<div class="alert alert-success fade in block-inner">-->
+                    <!--<button type="button" class="close" data-dismiss="alert">×</button>-->
+                    <!--<i class="icon-checkmark-circle"></i> Success alert-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+
         <div class="page-header">
             <div class="page-title">
                 <h3>Quản lý tài sản</h3>

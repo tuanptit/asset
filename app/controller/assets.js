@@ -7,6 +7,7 @@ var moment = require('moment');
 var multer = require('multer');
 var xlstojson = require("xls-to-json-lc");
 var xlsxtojson = require("xlsx-to-json-lc");
+var async = require('async');
 
 exports.addAsset = function (req, res) {
     var mAsset = new Asset({
@@ -38,16 +39,16 @@ exports.addAsset = function (req, res) {
         quantity: req.body.quantity
     });
     Asset.findOne({
-       $and: [
-           {
-               serial_number: req.body.serial
-           },
-           {
-               serial_number: {
-                   $ne: ""
-               }
-           }
-       ]
+        $and: [
+            {
+                serial_number: req.body.serial
+            },
+            {
+                serial_number: {
+                    $ne: ""
+                }
+            }
+        ]
     }, function (err, obj) {
         if (err) {
             res.json({
@@ -76,14 +77,13 @@ exports.addAsset = function (req, res) {
 }
 
 exports.getAllAsset = function (req, res) {
-    console.log(req.user)
     Asset.find({}, function (err, assets) {
         var list = [];
         for (var i = 0; i < assets.length; i++) {
             var tmp = {
                 username: assets[i].username,
                 category: {
-                    text:  assets[i].category.text,
+                    text: assets[i].category.text,
                     value: assets[i].category.value
                 },
                 package: assets[i].package,
@@ -115,9 +115,7 @@ var user = require('../../config/asset_user');
 var location = require('../../config/asset_installed');
 
 exports.getCategory = function (req, res) {
-    Property.find({
-
-    })
+    Property.find({})
 }
 
 
@@ -145,7 +143,7 @@ exports.getLocation = function (req, res) {
 exports.getAllCategory = function (req, res) {
     Category.find({}, function (err, cates) {
         var list = [];
-        for( var i = 0; i< cates.length; i++) {
+        for (var i = 0; i < cates.length; i++) {
             var tmp = {
                 name: cates[i].name,
                 id: cates[i].id
@@ -267,9 +265,9 @@ exports.deleteProperty = function (req, res) {
                     properties: new ObjectId(property_id)
                 }
             }, function (err) {
-                if(err){
-                    res.json(500, {message:"Could not remove user from admin list"});
-                }else{
+                if (err) {
+                    res.json(500, {message: "Could not remove user from admin list"});
+                } else {
                     res.json({
                         status: 'success'
                     });
@@ -283,12 +281,12 @@ exports.updateAsset = function (req, res) {
     Asset.findOne({
         _id: req.params.id
     }, function (err, asset) {
-        if(err){
+        if (err) {
             res.json({
                 status: '1',
                 message: err.message
             });
-        } else if(!asset) {
+        } else if (!asset) {
             res.json({
                 status: '2',
                 message: 'not found'
@@ -311,18 +309,18 @@ exports.updateAsset = function (req, res) {
                     }
                 ]
             }, function (err, asset1) {
-                if(err){
+                if (err) {
                     res.json({
                         status: '3',
                         message: err.message
                     });
                 }
-                if(!err && asset1){
+                if (!err && asset1) {
                     res.json({
                         status: '4',
                         message: 'bi trung'
                     });
-                } else if(!err && !asset1) {
+                } else if (!err && !asset1) {
                     var mAsset = {
                         username: req.body.username,
                         category: {
@@ -355,7 +353,7 @@ exports.updateAsset = function (req, res) {
 
                     var time = moment();
                     var time_now = time.format('HH:mm:ss YYYY-MM-DD');
-                    if(asset.username != mAsset.username) {
+                    if (asset.username != mAsset.username) {
                         console.log('1');
                         asset.history.push({
                             name: asset.username + "->" + mAsset.username,
@@ -364,7 +362,7 @@ exports.updateAsset = function (req, res) {
                             user: req.user.username
                         });
                     }
-                    if(asset.category.value != mAsset.category.value) {
+                    if (asset.category.value != mAsset.category.value) {
                         console.log('1');
                         asset.history.push({
                             name: asset.category.text + "->" + mAsset.category.text,
@@ -373,7 +371,7 @@ exports.updateAsset = function (req, res) {
                             user: req.user.username
                         });
                     }
-                    if(asset.manager.value != mAsset.manager.value) {
+                    if (asset.manager.value != mAsset.manager.value) {
                         console.log('1');
                         asset.history.push({
                             name: asset.manager.text + "->" + mAsset.manager.text,
@@ -383,7 +381,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.use.value != mAsset.use.value) {
+                    if (asset.use.value != mAsset.use.value) {
                         console.log('1');
                         asset.history.push({
                             name: asset.use.text + "->" + mAsset.use.text,
@@ -393,7 +391,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.location.value != mAsset.location.value) {
+                    if (asset.location.value != mAsset.location.value) {
                         console.log('1');
                         asset.history.push({
                             name: asset.location.text + "->" + mAsset.location.text,
@@ -403,7 +401,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.package != mAsset.package) {
+                    if (asset.package != mAsset.package) {
                         console.log('1');
                         asset.history.push({
                             name: asset.package + "->" + mAsset.package,
@@ -413,7 +411,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.unit != mAsset.unit) {
+                    if (asset.unit != mAsset.unit) {
                         console.log('1');
                         asset.history.push({
                             name: asset.unit + "->" + mAsset.unit,
@@ -423,7 +421,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.quantity != mAsset.quantity) {
+                    if (asset.quantity != mAsset.quantity) {
                         console.log('1');
                         asset.history.push({
                             name: asset.quantity + "->" + mAsset.quantity,
@@ -433,7 +431,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.year != mAsset.year) {
+                    if (asset.year != mAsset.year) {
                         console.log('1');
                         asset.history.push({
                             name: asset.year + "->" + mAsset.year,
@@ -443,7 +441,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.serial_number != mAsset.serial_number) {
+                    if (asset.serial_number != mAsset.serial_number) {
                         console.log('1');
                         asset.history.push({
                             name: asset.serial_number + "->" + mAsset.serial_number,
@@ -453,7 +451,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.brand != mAsset.brand) {
+                    if (asset.brand != mAsset.brand) {
                         console.log('1');
                         asset.history.push({
                             name: asset.brand + "->" + mAsset.brand,
@@ -463,7 +461,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.country != mAsset.country) {
+                    if (asset.country != mAsset.country) {
                         console.log('1');
                         asset.history.push({
                             name: asset.country + "->" + mAsset.country,
@@ -473,7 +471,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.status != mAsset.status) {
+                    if (asset.status != mAsset.status) {
 
                         asset.history.push({
                             name: asset.status + "->" + mAsset.status,
@@ -483,7 +481,7 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-                    if(asset.note != mAsset.note) {
+                    if (asset.note != mAsset.note) {
                         asset.history.push({
                             name: asset.note + "->" + mAsset.note,
                             date: time_now,
@@ -520,7 +518,7 @@ exports.updateAsset = function (req, res) {
                             });
                         }
                     });
-                } else{
+                } else {
                     res.json({
                         status: '5',
                         message: 'ko xac dinh'
@@ -551,43 +549,120 @@ exports.deleteAsset = function (req, res) {
 }
 
 exports.uploadFile = function (req, res) {
+    var XLSX = require('xlsx')
     var exceltojson;
-    upload(req,res,function(err){
-        console.log(err)
-        if(err){
-            res.json({error_code:1,err_desc:err});
+    upload(req, res, function (err) {
+        if (err) {
+            console.log(err)
+            res.json({error_code: 1, err_desc: err});
             return;
         }
         /** Multer gives us file info in req.file object */
-        if(!req.file){
-            res.json({error_code:2,err_desc:"No file passed"});
+        if (!req.file) {
+            res.json({error_code: 2, err_desc: "No file passed"});
             return;
         }
         /** Check the extension of the incoming file and
          *  use the appropriate module
          */
-        if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
+        if (req.file.originalname.split('.')[req.file.originalname.split('.').length - 1] === 'xlsx') {
             exceltojson = xlsxtojson;
         } else {
             exceltojson = xlstojson;
         }
-        console.log(req.file.path);
         try {
-            exceltojson({
-                input: req.file.path,
-                output: null, //since we don't need output.json
-                lowerCaseHeaders:true
-            }, function(err,result){
-                if(err) {
-                    return res.json({error_code:3,err_desc:err, data: null});
+            var workbook = XLSX.readFile(req.file.path);
+            var sheet_name_list = workbook.SheetNames;
+            sheet_name_list.forEach(function (y) {
+                var worksheet = workbook.Sheets[y];
+                var headers = {};
+                var data = [];
+                for (z in worksheet) {
+                    if (z[0] === '!') continue;
+
+                    //parse out the column, row, and value
+                    var col = z.substring(0, 1);
+                    var row = parseInt(z.substring(1));
+                    var value = worksheet[z].v;
+
+                    //store header names
+                    if (row == 1) {
+                        headers[col] = value;
+                        continue;
+                    }
+
+                    if (!data[row])
+                        data[row] = {};
+                    data[row][headers[col]] = value;
                 }
-                res.json({error_code:4,err_desc:null, data: result});
+                //drop those first two rows which are empty
+                data.shift();
+                data.shift();
+                var totalDoc = data.length;
+                var result = [];
+
+                async.waterfall([
+                    function (cb) {
+
+                    }
+                ])
+                async.eachSeries(data, 
+                    function (mAsset, callback) {
+                    async.waterfall([
+                        function (cb) {
+                            insertAsset(mAsset, function (err, asset) {
+                                cb(null, asset)
+                            })
+                        },
+                        function (asset, cb) {
+                            Asset.findOne({
+                                serial_number: asset.serial_number
+                            }, function (err, sAsset) {
+                                if (!err && !sAsset && asset.username !="" && asset.username!=null) {
+                                    asset.save(function (err, newAsset) {
+                                        cb(null, newAsset)
+                                    })
+                                } else {
+                                    cb(null,null)
+                                }
+                            });
+                        }
+                    ], function (err, newAsset) {
+                        if(newAsset) {
+                            result.push({
+                                code: 0,
+                                status: newAsset.username+": Thêm tài sản thành công"
+                            })
+                        } else {
+                            result.push({
+                                code: 1,
+                                status: "LỖI - "+mAsset.serial_number+" Serial Number đã tồn tại"
+                            })
+                        }
+                        callback();
+                    })
+                }, function (err) {
+                    if (err) {
+                        res.json({
+                            status: 'fail',
+                            message: err
+                        });
+                    } else {
+                        res.json({
+                            status: 'success',
+                            result: result
+                        });
+                    }
+                })
             });
-        } catch (e){
-            res.json({error_code:5,err_desc:"Corupted excel file"});
+
+        } catch (e) {
+            console.log(e)
+            res.json({error_code: 5, err_desc: "Corupted excel file"});
         }
     })
 }
+
 
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
@@ -595,22 +670,169 @@ var storage = multer.diskStorage({ //multers disk storage settings
     },
     filename: function (req, file, cb) {
         var datetimestamp = Date.now();
-        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
     }
 });
 
 var upload = multer({ //multer settings
     storage: storage,
-    fileFilter : function(req, file, callback) { //file filter
-        if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length-1]) === -1) {
+    fileFilter: function (req, file, callback) { //file filter
+        if (['xls', 'xlsx'].indexOf(file.originalname.split('.')[file.originalname.split('.').length - 1]) === -1) {
             return callback(new Error('Wrong extension type'));
         }
         callback(null, true);
     }
 }).single('file');
 
+var insertAsset = function (mAsset, callback) {
+    var newAsset = new Asset({
+        username: "",
+        category: {
+            text: "",
+            value: ""
+        },
+        package: "",
+        unit: "",
+        year: "",
+        serial_number: "",
+        brand: "",
+        country: "",
+        manager: {
+            text: "",
+            value: ""
+        },
+        use: {
+            text: "",
+            value: ""
+        },
+        location: {
+            text: "",
+            value: ""
+        },
+        status: "",
+        note: "",
+        quantity: ""
+    });
+    if (mAsset.name !=null && mAsset!="") newAsset.username = mAsset.name
+    if (mAsset.package.length > 0) newAsset.package = mAsset.package
+    if (mAsset.unit.length > 0) newAsset.unit = mAsset.unit
+    if (mAsset.quantity.length > 0) newAsset.quantity = mAsset.quantity
+    if (mAsset.serial_number.length > 0) newAsset.serial_number = mAsset.serial_number
+    if (mAsset.serial_number.length > 0) newAsset.serial_number = mAsset.serial_number
+    if (mAsset.year.length > 0) newAsset.year = mAsset.year
+    if (mAsset.brand.length > 0) newAsset.brand = mAsset.brand
+    if (mAsset.country.length > 0) newAsset.country = mAsset.country
+    if (mAsset.status.toUpperCase() == 'ĐANG HOẠT ĐỘNG')
+        newAsset.status = 1;
+    else if (mAsset.status.toUpperCase() == 'ĐANG SỬA CHỮA')
+        newAsset.status = 2;
+    else
+        newAsset.status = 3;
+    // console.log(mAsset)
+
+    var initCate = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.category, 'equipment', function (err, property) {
+            if (err) {
+                reject(err)
+            }
+            else if (property) {
+                newAsset.category.text = property.name;
+                newAsset.category.value = property.id;
+                resolve('success');
+            } else {
+                newAsset.category.text = "";
+                newAsset.category.value = ""
+                resolve('success');
+            }
+        });
+    });
+
+    var initManager = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.manager, 'manager', function (err, property) {
+            if (err) {
+                reject(err)
+            }
+            else if (property) {
+                newAsset.manager.text = property.name;
+                newAsset.manager.value = property.id;
+                resolve('success');
+            } else {
+                newAsset.manager.text = "";
+                newAsset.manager.value = "";
+                resolve('success');
+            }
+        });
+    })
+
+    var initUse = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.use, 'user', function (err, property) {
+            if (err) {
+                reject(err)
+            }
+            else if (property) {
+                newAsset.use.text = property.name;
+                newAsset.use.value = property.id;
+                resolve('success');
+            } else {
+                newAsset.use.text = ""
+                newAsset.use.value = "";
+                resolve('success');
+            }
+        });
+    });
+
+    var initLocation = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.location, 'location', function (err, property) {
+            if (err) {
+                reject(err)
+            }
+            else if (property) {
+                newAsset.location.text = property.name;
+                newAsset.location.value = property.id;
+                resolve('success');
+            } else {
+                newAsset.location.text = "";
+                newAsset.location.value = "";
+                resolve('success');
+            }
+        });
+    });
+    Promise.all([initCate, initManager, initUse, initLocation]).then(function (resolve) {
+        return callback(null, newAsset);
+    }).catch(function (err) {
+        return callback(resolve, null);
+    })
+
+}
+
+var getPropertyByName = function (name, uni_name, callback) {
+    Category.findOne({
+        uni_name: uni_name
+    }, function (err, category) {
+        if (err) {
+            callback(err, null)
+        } else {
+            Property.findOne({
+                $and: [
+                    {
+                        _id: {
+                            $in: category.properties
+                        }
+                    },
+                    {
+                        name: {
+                            $eq: name
+                        }
+                    }
+                ]
+            }, function (err, property) {
+                if (err) callback(err, null)
+                else callback(null, property)
+            })
+        }
+    })
+}
 var insertProperty = function (propertyName, categoryId, callback) {
-    console.log(categoryId)
     var newProperty = new Property({
         name: propertyName
     });

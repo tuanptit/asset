@@ -153,6 +153,59 @@ $(document).ready(function () {
                 }
             }
         });
+        $('#btn-import').unbind();
+        $('#btn-import').click(function () {
+            var file_data = $('#file').prop('files')[0];
+            var form_data = new FormData();
+            form_data.append('file', file_data);
+            $.ajax({
+                url: 'upload', // point to server-side PHP script
+                dataType: 'json',  // what to expect back from the PHP script, if anything
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,
+                type: 'post',
+                success: function(respone){
+                    console.log(respone)
+                    $('#import-status').empty();
+                    var status_import = respone.result;
+                    var time = 0;
+                    var success = 0;
+                    for(var i = 0; i< status_import.length;i++) {
+                        if(status_import[i].code == 0) {
+                            success++;
+                        }
+                        apperance(i, status_import[i]);
+                        time = 1000+ i*1000;
+                    }
+                    setTimeout(function () {
+                        $('#import-status').append('<div class="bg-success with-padding block-inner">Import thành công '+success+'/'+status_import.length+' tài sản.</div>')
+                    }, time+1000)
+
+                    $("#myUpload").modal("hide");
+                    getAllAssets();
+
+                    showNoti(4,"Import thành công!")
+                }
+            });
+        })
+        function apperance(i, data) {
+            setTimeout(function()
+            {
+                if(data.code == 0) {
+                    $('#import-status').append('<div class="alert alert-success fade in block-inner">\n' +
+                        '                    <button type="button" class="close" data-dismiss="alert">×</button>\n' +
+                        '                    <i class="icon-checkmark-circle"></i> '+data.status+'   ' +
+                        '                </div>').fadeIn(1000);
+                } else {
+                    $('#import-status').append('<div class="alert alert-danger fade in block-inner">\n' +
+                        '                    <button type="button" class="close" data-dismiss="alert">×</button>\n' +
+                        '                    <i class="icon-cancel-circle"></i> '+data.status+' ' +
+                        '                </div>').fadeIn(1000);
+                }
+                }, 1000+ i*1000);
+        }
 
         $(".btn-edit").unbind();
         $(".btn-edit").click(function (event) {
