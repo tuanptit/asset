@@ -15,12 +15,12 @@ module.exports = function () {
     });
 
     Category.findOne({
-        uni_name: 'equipment'
+        uni_name: 'category'
     }, function (err, cate) {
         if(!err && ! cate) {
             var cate = new Category({
                 name: 'Hệ thống thiết bị',
-                uni_name: 'equipment'
+                uni_name: 'category'
             });
             cate.save();
         }
@@ -39,12 +39,12 @@ module.exports = function () {
     });
 
     Category.findOne({
-        uni_name: 'user'
+        uni_name: 'use'
     }, function (err, cate) {
         if(!err && ! cate) {
             var cate = new Category({
                 name: 'Đơn vị sử dụng',
-                uni_name: 'user'
+                uni_name: 'use'
             });
             cate.save();
         }
@@ -57,6 +57,30 @@ module.exports = function () {
             var cate = new Category({
                 name: 'Vị trí lắp đặt',
                 uni_name: 'location'
+            });
+            cate.save();
+        }
+    });
+
+    Category.findOne({
+        uni_name: 'route'
+    }, function (err, cate) {
+        if(!err && ! cate) {
+            var cate = new Category({
+                name: 'Tuyến',
+                uni_name: 'route'
+            });
+            cate.save();
+        }
+    });
+
+    Category.findOne({
+        uni_name: 'system'
+    }, function (err, cate) {
+        if(!err && ! cate) {
+            var cate = new Category({
+                name: 'Vị trí trên hệ thống',
+                uni_name: 'system'
             });
             cate.save();
         }

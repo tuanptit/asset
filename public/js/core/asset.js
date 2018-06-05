@@ -83,8 +83,11 @@ $(document).ready(function () {
                 }else if(value.code == 12) {
                     action = "<span class='label label-warning'>Đổi nước sản xuất</span>";
                 }
-                else if(value.code == 13) {
-                    action = "<span class='label label-info'>Đổi trạng thái</span>";
+                else if(value.code == 66) {
+                    action = "<span class='label label-info'>Đổi tuyến</span>";
+                }
+                else if(value.code == 88) {
+                    action = "<span class='label label-warning'>Đổi vị trí trên hệ thống</span>";
                 }
                 else {
                     action = "<span class='label label-warning'>Đổi ghi chú</span>";
@@ -108,7 +111,7 @@ $(document).ready(function () {
                 } else {
                     mStatus= "<span class='label label-danger'>Đang bảo hành</span>"
                 }
-                t.row.add([value.username, value.category.text, value.serial_number, value.manager.text, value.use.text, value.location.text,
+                t.row.add([value.username, value.category.text, value.serial_number, value.route.text, value.system.text, value.location.text,
                     mStatus, value.package, value.unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
                 ]).draw(false);
             });
@@ -317,10 +320,13 @@ $(document).ready(function () {
         $('#select-year-edit option[value="'+asset.year+'"]').attr('selected', 'selected');
         $('#brand-edit').val(asset.brand);
         $('#note-edit').val(asset.note);
-        getAllPropertiesOfCategory(asset,"select-category-edit", "equipment");
+
+        getAllPropertiesOfCategory(asset,"select-category-edit", "category");
         getAllPropertiesOfCategory(asset,"select-manager-edit", "manager");
-        getAllPropertiesOfCategory(asset,"select-user-edit", "user");
+        getAllPropertiesOfCategory(asset,"select-user-edit", "use");
         getAllPropertiesOfCategory(asset,"select-location-edit", "location");
+        getAllPropertiesOfCategory(asset,"select-system-edit", "system");
+        getAllPropertiesOfCategory(asset,"select-route-edit", "route");
     }
 
     
@@ -329,12 +335,19 @@ $(document).ready(function () {
             method: "GET"
         }).success(function (res) {
             if (res.status == "success") {
+                //console.log(asset[category])
+                var value = asset[url].value;
                 var items = [];
-                var value = asset.category.value;
                 items = res.result;
                 $('#'+element).find('option')
                     .remove()
                     .end();
+
+                $('#'+element).append($('<option>', {
+                    value: 0,
+                    text : "Chọn"
+                }));
+
                 $.each(items, function (i, item) {
                     $('#'+element).append($('<option>', {
                         value: item.id,
@@ -344,7 +357,7 @@ $(document).ready(function () {
                 $('#'+element+' option[value="'+value+'"]').attr('selected','selected');
 
             } else {
-                console.log(res.status);
+                console.log(res);
             }
         }).error(function (err) {
             console.log(err);
@@ -361,6 +374,10 @@ $(document).ready(function () {
                 $('#'+element).find('option')
                     .remove()
                     .end();
+                $('#'+element).append($('<option>', {
+                    value: 0,
+                    text: 'Chọn'
+                }));
                 $.each(items, function (i, item) {
                     $('#'+element).append($('<option>', {
                         value: item.id,
@@ -388,11 +405,15 @@ $(document).ready(function () {
         $("#select-manager").empty();
         $("#select-use").empty();
         $("#select-location").empty();
+        $("#select-route").empty();
+        $("#select-system").empty();
 
-        getAllProperties('select-category','equipment');
+        getAllProperties('select-category','category');
         getAllProperties('select-manager','manager');
-        getAllProperties('select-use','user');
+        getAllProperties('select-use','use');
         getAllProperties('select-location','location');
+        getAllProperties('select-route','route');
+        getAllProperties('select-system','system');
 
     }
 
@@ -400,10 +421,6 @@ $(document).ready(function () {
         event.preventDefault();
         var asset = {
             username: $('#username').val(),
-            category: {
-                text: $('#select-category option:selected').text(),
-                value: $('#select-category option:selected').val()
-            },
             package: $('#goi-thau').val(),
             unit: $('#select-unit').val(),
             year: $('#select-year').val(),
@@ -411,22 +428,61 @@ $(document).ready(function () {
             quantity: $('#quantity').val(),
             brand: $('#brand').val(),
             country: $('#country').val(),
+            status: $('#status').val(),
+            note: $('#note').val(),
+            category: {
+                text: '',
+                value: ''
+            },
+
             manager: {
-                text: $('#select-manager option:selected').text(),
-                value: $('#select-manager option:selected').val()
+                text: '',
+                value: ''
             },
             use: {
-                text: $('#select-use option:selected').text(),
-                value: $('#select-use option:selected').val()
+                text: '',
+                value: ''
             },
             location: {
-                text: $('#select-location option:selected').text(),
-                value: $('#select-location option:selected').val()
+                text: '',
+                value: ''
             },
-            status: $('#status').val(),
-            note: $('#note').val()
+            route: {
+                text: '',
+                value: ''
+            },
+            system: {
+                text: '',
+                value: ''
+            }
         }
-        if(asset.username == "" || asset.category == "" || asset.manager == "" || asset.location == "" || asset.use == "") {
+        if ($('#select-category').prop('selectedIndex') > 0) {
+            asset.category.text = $('#select-category option:selected').text();
+            asset.category.value = $('#select-category option:selected').val();
+        }
+
+        if ($('#select-manager').prop('selectedIndex') > 0) {
+            asset.manager.text = $('#select-manager option:selected').text();
+            asset.manager.value = $('#select-manager option:selected').val();
+        }
+        if ($('#select-use').prop('selectedIndex') > 0) {
+            asset.use.text = $('#select-use option:selected').text();
+            asset.use.value = $('#select-use option:selected').val();
+        }
+        if ($('#select-location').prop('selectedIndex') > 0) {
+            asset.location.text = $('#select-location option:selected').text();
+            asset.location.value = $('#select-location option:selected').val();
+        }
+
+        if ($('#select-route').prop('selectedIndex') > 0) {
+            asset.route.text = $('#select-route option:selected').text();
+            asset.route.value = $('#select-route option:selected').val();
+        }
+        if ($('#select-system').prop('selectedIndex') > 0) {
+            asset.system.text = $('#select-system option:selected').text();
+            asset.system.value = $('#select-system option:selected').val();
+        }
+        if(asset.username == "") {
             showNoti(3, "Bạn chưa nhập đủ các trường cần thiết");
         } else {
             addAsset(asset);
@@ -436,12 +492,8 @@ $(document).ready(function () {
 
     $('#btn-edit-asset').click(function (event) {
         event.preventDefault();
-        var asset_item = {
+        var asset = {
             username: $('#username-edit').val(),
-            category: {
-                text: $('#select-category-edit option:selected').text(),
-                value: $('#select-category-edit option:selected').val()
-            },
             package: $('#goi-thau-edit').val(),
             unit: $('#select-unit-edit').val(),
             year: $('#select-year-edit').val(),
@@ -449,26 +501,67 @@ $(document).ready(function () {
             quantity: $('#quantity-edit').val(),
             brand: $('#brand-edit').val(),
             country: $('#country-edit').val(),
+            category: {
+                text: '',
+                value: ''
+            },
+
             manager: {
-                text: $('#select-manager-edit option:selected').text(),
-                value:$('#select-manager-edit option:selected').val()
+                text: '',
+                value: ''
             },
             use: {
-                text: $('#select-user-edit option:selected').text(),
-                value: $('#select-user-edit option:selected').val()
+                text: '',
+                value: ''
             },
             location: {
-                text: $('#select-location-edit option:selected').text(),
-                value: $('#select-location-edit option:selected').val()
+                text: '',
+                value: ''
+            },
+            route: {
+                text: '',
+                value: ''
+            },
+            system: {
+                text: '',
+                value: ''
             },
             status: $('#status-edit').val(),
-            note: $('#note-edit').val(),
+            note: $('#note-edit').val()
+        }
+
+        if ($('#select-category-edit').prop('selectedIndex') > 0) {
+            asset.category.text = $('#select-category-edit option:selected').text();
+            asset.category.value = $('#select-category-edit option:selected').val();
+        }
+
+        if ($('#select-manager-edit').prop('selectedIndex') > 0) {
+            asset.manager.text = $('#select-manager-edit option:selected').text();
+            asset.manager.value = $('#select-manager-edit option:selected').val();
+        }
+        if ($('#select-user-edit').prop('selectedIndex') > 0) {
+            asset.use.text = $('#select-user-edit option:selected').text();
+            asset.use.value = $('#select-user-edit option:selected').val();
+        }
+        if ($('#select-location-edit').prop('selectedIndex') > 0) {
+            asset.location.text = $('#select-location-edit option:selected').text();
+            asset.location.value = $('#select-location-edit option:selected').val();
+        }
+
+        if ($('#select-route-edit').prop('selectedIndex') > 0) {
+            asset.route.text = $('#select-route-edit option:selected').text();
+            asset.route.value = $('#select-route-edit option:selected').val();
+        }
+        if ($('#select-system-edit').prop('selectedIndex') > 0) {
+            asset.system.text = $('#select-system-edit option:selected').text();
+            asset.system.value = $('#select-system-edit option:selected').val();
         }
         var id = $('#serial-edit').attr('asset-id');
-        if(asset_item.username == "" || asset_item.username == null ){
+        console.log(asset)
+        if(asset.username == "" || asset.username == null ){
             showNoti(3,"Bạn chưa nhập đủ thông tin cần thiết")
         } else{
-            updateAsset(asset_item,id);
+            updateAsset(asset,id);
         }
     })
 
@@ -479,12 +572,13 @@ $(document).ready(function () {
             type: 'POST',
             data: asset
         }).success(function (res) {
+            console.log(res)
             if (res.code == "3") {
                 showNoti(4, "Thêm tài sản thành công");
             }
             else if (res.code == "1") {
                 showNoti(3, "Serial Number đã tồn tại");
-            } else if(res.code == "0"){
+            } else{
                 console.log('ko xd')
                 showNoti(3, "Hệ thống gặp lỗi");
             }
@@ -499,6 +593,7 @@ $(document).ready(function () {
             method: 'PUT',
             data: newAsset
         }).success(function (res) {
+            console.log(res)
             if (res.status == "success") {
                 showNoti(4, "Sửa thông tin tài sản thành công!");
                 clearDataEditForm();
@@ -557,6 +652,8 @@ $(document).ready(function () {
                 brand: assets[i].brand,
                 country: assets[i].country,
                 manager: assets[i].manager,
+                route: assets[i].route,
+                system: assets[i].system,
                 use: assets[i].use,
                 location: assets[i].location,
                 status: assets[i].status,

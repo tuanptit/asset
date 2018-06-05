@@ -12,8 +12,7 @@ var assetSchema = new Schema({
     quantity:String,
     year: Number,
     serial_number: {
-        type: String,
-        unique: true
+        type: String
     },
     brand: String,
     country: String,
@@ -29,6 +28,14 @@ var assetSchema = new Schema({
         text: String,
         value: String
     },
+    route: {
+        text: String,
+        value: String
+    },
+    system: {
+        text: String,
+        value: String
+    },
     status: String,
     note: String,
     history:[{
@@ -40,6 +47,6 @@ var assetSchema = new Schema({
         },
         user: String
     }]
-});
+}, {usePushEach: true});
 
 module.exports = mongoose.model('Asset', assetSchema);

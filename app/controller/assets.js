@@ -34,6 +34,14 @@ exports.addAsset = function (req, res) {
             text: req.body.location.text,
             value: req.body.location.value
         },
+        route: {
+            text: req.body.route.text,
+            value: req.body.route.value
+        },
+        system: {
+            text: req.body.system.text,
+            value: req.body.system.value
+        },
         status: req.body.status,
         note: req.body.note,
         quantity: req.body.quantity
@@ -92,9 +100,29 @@ exports.getAllAsset = function (req, res) {
                 serial_number: assets[i].serial_number,
                 brand: assets[i].brand,
                 country: assets[i].country,
-                manager: assets[i].manager,
-                use: assets[i].use,
-                location: assets[i].location,
+                manager: {
+                    text: assets[i].manager.text,
+                    value: assets[i].manager.value
+                },
+                use: {
+                    text: assets[i].use.text,
+                    value: assets[i].use.value
+                },
+                location: {
+                    text: assets[i].location.text,
+                    value: assets[i].location.value
+                },
+
+                route: {
+                    text: assets[i].route.text,
+                    value: assets[i].route.value
+                },
+
+                system: {
+                    text: assets[i].system.text,
+                    value: assets[i].system.value
+                },
+
                 status: assets[i].status,
                 note: assets[i].note,
                 id: assets[i].id,
@@ -213,6 +241,8 @@ exports.getPropertiesByUniName = function (req, res) {
         uni_name: req.params.uni_name
     }, function (err, category) {
         if (!category || err) {
+            console.log('aaaaa');
+            console.log(err)
             res.json({
                 status: 'fail'
             });
@@ -348,6 +378,14 @@ exports.updateAsset = function (req, res) {
                         status: req.body.status,
                         note: req.body.note,
                         quantity: req.body.quantity,
+                        route: {
+                            text: req.body.route.text,
+                            value: req.body.route.value
+                        },
+                        system: {
+                            text: req.body.system.text,
+                            value: req.body.system.value
+                        },
                         history: []
                     };
 
@@ -380,9 +418,27 @@ exports.updateAsset = function (req, res) {
                             user: req.user.username
                         });
                     }
+                    if (asset.route.value != mAsset.route.value) {
+                        console.log('route');
+                        asset.history.push({
+                            name: asset.route.text + "->" + mAsset.route.text,
+                            date: time_now,
+                            code: 66,
+                            user: req.user.username
+                        });
+                    }
+
+                    if (asset.system.value != mAsset.system.value) {
+                        console.log('system');
+                        asset.history.push({
+                            name: asset.system.text + "->" + mAsset.system.text,
+                            date: time_now,
+                            code: 88,
+                            user: req.user.username
+                        });
+                    }
 
                     if (asset.use.value != mAsset.use.value) {
-                        console.log('1');
                         asset.history.push({
                             name: asset.use.text + "->" + mAsset.use.text,
                             date: time_now,
@@ -490,7 +546,6 @@ exports.updateAsset = function (req, res) {
                         });
                     }
 
-
                     asset.username = mAsset.username;
                     asset.category = mAsset.category;
                     asset.package = mAsset.package;
@@ -504,9 +559,13 @@ exports.updateAsset = function (req, res) {
                     asset.status = mAsset.status;
                     asset.note = mAsset.note;
                     asset.quantity = mAsset.quantity;
-                    asset.serial_number = mAsset.serial_number
+                    asset.serial_number = mAsset.serial_number;
+                    asset.route = mAsset.route;
+                    asset.system = mAsset.system;
+                    console.log(asset)
                     asset.save(function (err, newAsset) {
                         if (err) {
+                            console.log(err)
                             res.json({
                                 status: '5',
                                 message: err.message
@@ -731,7 +790,7 @@ var insertAsset = function (mAsset, callback) {
     // console.log(mAsset)
 
     var initCate = new Promise(function (resolve, reject) {
-        getPropertyByName(mAsset.category, 'equipment', function (err, property) {
+        getPropertyByName(mAsset.category, 'category', function (err, property) {
             if (err) {
                 reject(err)
             }
