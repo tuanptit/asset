@@ -3,10 +3,7 @@ var Schema = mongoose.Schema;
 
 var assetSchema = new Schema({
     username: String,
-    category: {
-        text: String,
-        value: String
-    },
+    category: {type: Schema.Types.ObjectId, ref: 'Property'},
     package: String,
     unit: String,
     quantity:String,
@@ -16,26 +13,11 @@ var assetSchema = new Schema({
     },
     brand: String,
     country: String,
-    manager: {
-        text: String,
-        value: String
-    },
-    use: {
-        text: String,
-        value: String
-    },
-    location: {
-        text: String,
-        value: String
-    },
-    route: {
-        text: String,
-        value: String
-    },
-    system: {
-        text: String,
-        value: String
-    },
+    manager: {type: Schema.Types.ObjectId, ref: 'Property'},
+    use: {type: Schema.Types.ObjectId, ref: 'Property'},
+    location: {type: Schema.Types.ObjectId, ref: 'Property'},
+    route: {type: Schema.Types.ObjectId, ref: 'Property'},
+    system: {type: Schema.Types.ObjectId, ref: 'Property'},
     status: String,
     note: String,
     history:[{

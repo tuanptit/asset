@@ -81,6 +81,56 @@ $(document).ready(function () {
             var categoryId = $("#btn-add-property").attr("category");
             deleteProperty(idProperty, categoryId);
         });
+        bindActionEdit();
+        bindActionSave();
+    }
+    
+    function bindActionSave() {
+        $(".btn-save-property").unbind();
+        $(".btn-save-property").click(function () {
+            $(this).find('i').removeClass('fa-arrow-circle-right');
+            $(this).find('i').addClass('fa-pencil-square');
+            var id = $(this).attr('properties-id');
+            var name = $('input[input-id="'+id+'"]').val();
+            var property = {
+                name: name
+            }
+            $('.name-text[text-id="'+id+'"]').css("display","block");
+            $('.input-text[input-id="'+id+'"]').css("display","none");
+            bindActionEdit();
+            editProperty(property, id);
+        });
+    }
+    function bindActionEdit() {
+        $(".btn-edit").unbind();
+        $(".btn-save-property").unbind();
+        $(".btn-edit").click(function () {
+            var id = $(this).attr('properties-id');
+            $('.name-text[text-id="'+id+'"]').css("display","none");
+            $('.input-text[input-id="'+id+'"]').css("display","block");
+            $(this).find('i').removeClass('fa-pencil-square');
+            $(this).find('i').addClass('fa-arrow-circle-right');
+            $(this).removeClass('btn-edit');
+            $(this).addClass('btn-save-property');
+            bindActionSave();
+        });
+    }
+
+    function editProperty(property, id) {
+        console.log(name)
+        $.ajax('/admin/property/'+ id, {
+            type: 'PUT',
+            data: property
+        }).success(function (res) {
+            if(res.status ='success') {
+                var new_name = res.result.name;
+                var id = res.result._id;
+                $('.name-text[text-id="'+id+'"]').text(new_name)
+                showNoti(4, "Sửa thuộc tính thành công");
+            }
+        }).error(function (err) {
+            showNoti(3, "Hệ thống gặp lỗi");
+        });
     }
 
     function deleteProperty(id, category) {
@@ -119,16 +169,22 @@ $(document).ready(function () {
 
 
     function addPropertiesToTable(properties) {
+        console.log(properties)
         $("#tbody-info-properties").empty();
         var tbody = "";
         for (var i = 0; i < properties.length; i++) {
             tbody += "<tr> " +
                 "<th class='col-md-5'>" + (Math.floor(i) + 1) + "</th> " +
-                "<th class='col-md-7'>" + properties[i].name + "</th> " +
+                "<th class='col-md-7'><p class='name-text' text-id='"+properties[i].id+"'>"+properties[i].name+"</p><input input-id='"+properties[i].id+"' class='input-text' type='text' name='property_name' value='"+properties[i].name+"' style='display: none;'></th> " +
+                "<th><a class='btn-edit' properties-id='"+properties[i].id+"' href='#'> <i class='fa fa-pencil-square'></i></a></th>"+
                 "<th><a class='btn-delete' properties-id='"+properties[i].id+"' href='#' data-toggle='modal' data-target='#myModal'><i class='fa fa-times'></i></a></th>"+
                 "</tr>";
         }
+
         $("#tbody-info-properties").append(tbody);
+        bindDeleteAction();
+        bindActionSave();
+        bindActionEdit();
     }
     function bindActionForm() {
         $("#btn-add-property").unbind();
@@ -154,7 +210,10 @@ $(document).ready(function () {
             if (res.status == "success") {
                 $("#province").val("");
                 showNoti(4, "Thêm thuộc tính thành công");
-                 properties.push(res.result);
+                 properties.push({
+                     id : res.result._id,
+                     name: res.result.name
+                 });
                  addPropertiesToTable(properties);
             } else {
                 console.log(res.message);

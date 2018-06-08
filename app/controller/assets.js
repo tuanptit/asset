@@ -12,40 +12,45 @@ var async = require('async');
 exports.addAsset = function (req, res) {
     var mAsset = new Asset({
         username: req.body.username,
-        category: {
-            text: req.body.category.text,
-            value: req.body.category.value
-        },
         package: req.body.package,
         unit: req.body.unit,
         year: req.body.year,
         serial_number: req.body.serial,
         brand: req.body.brand,
         country: req.body.country,
-        manager: {
-            text: req.body.manager.text,
-            value: req.body.manager.value
-        },
-        use: {
-            text: req.body.use.text,
-            value: req.body.use.value
-        },
-        location: {
-            text: req.body.location.text,
-            value: req.body.location.value
-        },
-        route: {
-            text: req.body.route.text,
-            value: req.body.route.value
-        },
-        system: {
-            text: req.body.system.text,
-            value: req.body.system.value
-        },
         status: req.body.status,
         note: req.body.note,
         quantity: req.body.quantity
     });
+    var category = req.body.category;
+    var manager = req.body.manager;
+    var use = req.body.use;
+    var location = req.body.location;
+    var route = req.body.route;
+    var system = req.body.system;
+
+    if(category!=null && category!="") {
+        mAsset.category = new ObjectId(category);
+    }
+    if(manager!=null && manager!="") {
+        mAsset.manager =  new ObjectId(manager);
+    }
+
+    if(use!=null && use!="") {
+        mAsset.use = new ObjectId(use);
+    }
+    if(location!=null && location!="") {
+        mAsset.location = new ObjectId(location);
+    }
+
+    if(route!=null && route!="") {
+        mAsset.route = new ObjectId(route);
+    }
+    if(route!=null && route!="") {
+        mAsset.route = new ObjectId(route);
+    }
+
+    console.log(mAsset)
     Asset.findOne({
         $and: [
             {
@@ -70,6 +75,7 @@ exports.addAsset = function (req, res) {
         } else {
             mAsset.save(function (err) {
                 if (err) {
+                    console.log(err)
                     res.json({
                         code: 2
                     })
@@ -90,38 +96,20 @@ exports.getAllAsset = function (req, res) {
         for (var i = 0; i < assets.length; i++) {
             var tmp = {
                 username: assets[i].username,
-                category: {
-                    text: assets[i].category.text,
-                    value: assets[i].category.value
-                },
+                category: assets[i].category,
                 package: assets[i].package,
                 unit: assets[i].unit,
                 year: assets[i].year,
                 serial_number: assets[i].serial_number,
                 brand: assets[i].brand,
                 country: assets[i].country,
-                manager: {
-                    text: assets[i].manager.text,
-                    value: assets[i].manager.value
-                },
-                use: {
-                    text: assets[i].use.text,
-                    value: assets[i].use.value
-                },
-                location: {
-                    text: assets[i].location.text,
-                    value: assets[i].location.value
-                },
+                manager: assets[i].manager,
+                use: assets[i].use,
+                location: assets[i].location,
 
-                route: {
-                    text: assets[i].route.text,
-                    value: assets[i].route.value
-                },
+                route: assets[i].route,
 
-                system: {
-                    text: assets[i].system.text,
-                    value: assets[i].system.value
-                },
+                system: assets[i].system,
 
                 status: assets[i].status,
                 note: assets[i].note,
@@ -183,6 +171,24 @@ exports.getAllCategory = function (req, res) {
             result: list
         })
     });
+}
+
+exports.getPropertyById = function (req, res) {
+    Property.findOne({
+        _id: req.params.id
+    }, function (err, pro) {
+        if(err || !pro) {
+            res.json({
+                code: 0,
+                result: err
+            })
+        } else if( !err && pro) {
+            res.json({
+                code: 1,
+                result: pro
+            })
+        }
+    })
 }
 exports.addProperty = function (req, res) {
     insertProperty(req.body.name, req.body.category, function (err, province) {
@@ -306,6 +312,41 @@ exports.deleteProperty = function (req, res) {
         }
     })
 }
+exports.updateProperty = function (req, res) {
+
+    Property.findOne({
+        _id: req.params.id
+    }, function (err, property) {
+        if(err) {
+            res.json({
+                status: '1',
+                message: err
+            })
+        } else if(!property) {
+            res.json({
+                status: '2',
+                message: 'not found'
+            })
+        } else {
+            var name = req.body.name;
+            property.name = name;
+            property.save(function (err, pro) {
+                if(err) {
+
+                    res.json({
+                        status: '3',
+                        message: err.message
+                    });
+                } else {
+                    res.json({
+                        status: 'success',
+                        result: pro
+                    });
+                }
+            })
+        }
+    })
+}
 
 exports.updateAsset = function (req, res) {
     Asset.findOne({
@@ -353,39 +394,21 @@ exports.updateAsset = function (req, res) {
                 } else if (!err && !asset1) {
                     var mAsset = {
                         username: req.body.username,
-                        category: {
-                            text: req.body.category.text,
-                            value: req.body.category.value
-                        },
+                        category:req.body.category,
                         package: req.body.package,
                         unit: req.body.unit,
                         year: req.body.year,
                         serial_number: req.body.serial_number,
                         brand: req.body.brand,
                         country: req.body.country,
-                        manager: {
-                            text: req.body.manager.text,
-                            value: req.body.manager.value
-                        },
-                        use: {
-                            text: req.body.use.text,
-                            value: req.body.use.value
-                        },
-                        location: {
-                            text: req.body.location.text,
-                            value: req.body.location.value
-                        },
+                        manager: req.body.manager,
+                        use: req.body.use,
+                        location: req.body.location,
                         status: req.body.status,
                         note: req.body.note,
                         quantity: req.body.quantity,
-                        route: {
-                            text: req.body.route.text,
-                            value: req.body.route.value
-                        },
-                        system: {
-                            text: req.body.system.text,
-                            value: req.body.system.value
-                        },
+                        route: req.body.route,
+                        system: req.body.system,
                         history: []
                     };
 
@@ -400,57 +423,57 @@ exports.updateAsset = function (req, res) {
                             user: req.user.username
                         });
                     }
-                    if (asset.category.value != mAsset.category.value) {
+                    if (asset.category != mAsset.category) {
                         console.log('1');
                         asset.history.push({
-                            name: asset.category.text + "->" + mAsset.category.text,
+                            name: asset.category + "->" + mAsset.category,
                             date: time_now,
                             code: 2,
                             user: req.user.username
                         });
                     }
-                    if (asset.manager.value != mAsset.manager.value) {
+                    if (asset.manager != mAsset.manager) {
                         console.log('1');
                         asset.history.push({
-                            name: asset.manager.text + "->" + mAsset.manager.text,
+                            name: asset.manager + "->" + mAsset.manager,
                             date: time_now,
                             code: 3,
                             user: req.user.username
                         });
                     }
-                    if (asset.route.value != mAsset.route.value) {
+                    if (asset.route != mAsset.route) {
                         console.log('route');
                         asset.history.push({
-                            name: asset.route.text + "->" + mAsset.route.text,
+                            name: asset.route + "->" + mAsset.route,
                             date: time_now,
                             code: 66,
                             user: req.user.username
                         });
                     }
 
-                    if (asset.system.value != mAsset.system.value) {
+                    if (asset.system != mAsset.system) {
                         console.log('system');
                         asset.history.push({
-                            name: asset.system.text + "->" + mAsset.system.text,
+                            name: asset.system + "->" + mAsset.system,
                             date: time_now,
                             code: 88,
                             user: req.user.username
                         });
                     }
 
-                    if (asset.use.value != mAsset.use.value) {
+                    if (asset.use != mAsset.use) {
                         asset.history.push({
-                            name: asset.use.text + "->" + mAsset.use.text,
+                            name: asset.use + "->" + mAsset.use,
                             date: time_now,
                             code: 4,
                             user: req.user.username
                         });
                     }
 
-                    if (asset.location.value != mAsset.location.value) {
+                    if (asset.location != mAsset.location) {
                         console.log('1');
                         asset.history.push({
-                            name: asset.location.text + "->" + mAsset.location.text,
+                            name: asset.location + "->" + mAsset.location,
                             date: time_now,
                             code: 5,
                             user: req.user.username
@@ -659,12 +682,7 @@ exports.uploadFile = function (req, res) {
                 data.shift();
                 var totalDoc = data.length;
                 var result = [];
-
-                async.waterfall([
-                    function (cb) {
-
-                    }
-                ])
+                console.log(data)
                 async.eachSeries(data, 
                     function (mAsset, callback) {
                     async.waterfall([

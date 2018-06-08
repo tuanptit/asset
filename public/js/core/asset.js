@@ -111,7 +111,20 @@ $(document).ready(function () {
                 } else {
                     mStatus= "<span class='label label-danger'>Đang bảo hành</span>"
                 }
-                t.row.add([value.username, value.category.text, value.serial_number, value.route.text, value.system.text, value.location.text,
+                var category ="", route ="", system="", location="";
+                if(value.category!=null && value.category!="") {
+                    category = getPropertyById(value.category);
+                }
+                if(value.route!=null && value.route!="") {
+                    route = getPropertyById(value.route);
+                }
+                if(value.system!=null && value.system!="") {
+                    system = getPropertyById(value.system);
+                }
+                if(value.location!=null && value.location!="") {
+                    location = getPropertyById(value.location);
+                }
+                t.row.add([value.username, category, value.serial_number, route, system, location,
                     mStatus, value.package, value.unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
                 ]).draw(false);
             });
@@ -121,8 +134,22 @@ $(document).ready(function () {
         }
         bindActionTable();
     }
-
-
+    function getPropertyById(id) {
+        var name = "";
+        $.ajax('/property/'+id, {
+            method: "GET",
+            async: false
+        }).success(function (res) {
+            if (res.code == "1") {
+                name = (res.result.name);
+            } else {
+                name ="";
+            }
+        }).error(function (err) {
+            name = ""
+        });
+        return name;
+    }
     t.columns( [7, 8,9,10,11,12,13 ] ).visible( false, false );
     // t.buttons().container()
     //     .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
@@ -335,8 +362,7 @@ $(document).ready(function () {
             method: "GET"
         }).success(function (res) {
             if (res.status == "success") {
-                //console.log(asset[category])
-                var value = asset[url].value;
+                var value = asset[url];
                 var items = [];
                 items = res.result;
                 $('#'+element).find('option')
@@ -430,57 +456,33 @@ $(document).ready(function () {
             country: $('#country').val(),
             status: $('#status').val(),
             note: $('#note').val(),
-            category: {
-                text: '',
-                value: ''
-            },
 
-            manager: {
-                text: '',
-                value: ''
-            },
-            use: {
-                text: '',
-                value: ''
-            },
-            location: {
-                text: '',
-                value: ''
-            },
-            route: {
-                text: '',
-                value: ''
-            },
-            system: {
-                text: '',
-                value: ''
-            }
+            category: {},
+            manager: '',
+            use: '',
+            location: '',
+            route: '',
+            system: ''
         }
         if ($('#select-category').prop('selectedIndex') > 0) {
-            asset.category.text = $('#select-category option:selected').text();
-            asset.category.value = $('#select-category option:selected').val();
+            asset.category= $('#select-category option:selected').val();
         }
 
         if ($('#select-manager').prop('selectedIndex') > 0) {
-            asset.manager.text = $('#select-manager option:selected').text();
-            asset.manager.value = $('#select-manager option:selected').val();
+            asset.manager = $('#select-manager option:selected').val();
         }
         if ($('#select-use').prop('selectedIndex') > 0) {
-            asset.use.text = $('#select-use option:selected').text();
-            asset.use.value = $('#select-use option:selected').val();
+            asset.use = $('#select-use option:selected').val();
         }
         if ($('#select-location').prop('selectedIndex') > 0) {
-            asset.location.text = $('#select-location option:selected').text();
-            asset.location.value = $('#select-location option:selected').val();
+            asset.location = $('#select-location option:selected').val();
         }
 
         if ($('#select-route').prop('selectedIndex') > 0) {
-            asset.route.text = $('#select-route option:selected').text();
-            asset.route.value = $('#select-route option:selected').val();
+            asset.route = $('#select-route option:selected').val();
         }
         if ($('#select-system').prop('selectedIndex') > 0) {
-            asset.system.text = $('#select-system option:selected').text();
-            asset.system.value = $('#select-system option:selected').val();
+            asset.system = $('#select-system option:selected').val();
         }
         if(asset.username == "") {
             showNoti(3, "Bạn chưa nhập đủ các trường cần thiết");
@@ -501,60 +503,29 @@ $(document).ready(function () {
             quantity: $('#quantity-edit').val(),
             brand: $('#brand-edit').val(),
             country: $('#country-edit').val(),
-            category: {
-                text: '',
-                value: ''
-            },
-
-            manager: {
-                text: '',
-                value: ''
-            },
-            use: {
-                text: '',
-                value: ''
-            },
-            location: {
-                text: '',
-                value: ''
-            },
-            route: {
-                text: '',
-                value: ''
-            },
-            system: {
-                text: '',
-                value: ''
-            },
             status: $('#status-edit').val(),
             note: $('#note-edit').val()
         }
 
         if ($('#select-category-edit').prop('selectedIndex') > 0) {
-            asset.category.text = $('#select-category-edit option:selected').text();
-            asset.category.value = $('#select-category-edit option:selected').val();
+            asset.category = $('#select-category-edit option:selected').val();
         }
 
         if ($('#select-manager-edit').prop('selectedIndex') > 0) {
-            asset.manager.text = $('#select-manager-edit option:selected').text();
-            asset.manager.value = $('#select-manager-edit option:selected').val();
+            asset.manager = $('#select-manager-edit option:selected').val();
         }
         if ($('#select-user-edit').prop('selectedIndex') > 0) {
-            asset.use.text = $('#select-user-edit option:selected').text();
-            asset.use.value = $('#select-user-edit option:selected').val();
+            asset.use = $('#select-user-edit option:selected').val();
         }
         if ($('#select-location-edit').prop('selectedIndex') > 0) {
-            asset.location.text = $('#select-location-edit option:selected').text();
-            asset.location.value = $('#select-location-edit option:selected').val();
+            asset.location = $('#select-location-edit option:selected').val();
         }
 
         if ($('#select-route-edit').prop('selectedIndex') > 0) {
-            asset.route.text = $('#select-route-edit option:selected').text();
-            asset.route.value = $('#select-route-edit option:selected').val();
+            asset.route = $('#select-route-edit option:selected').val();
         }
         if ($('#select-system-edit').prop('selectedIndex') > 0) {
-            asset.system.text = $('#select-system-edit option:selected').text();
-            asset.system.value = $('#select-system-edit option:selected').val();
+            asset.system = $('#select-system-edit option:selected').val();
         }
         var id = $('#serial-edit').attr('asset-id');
         console.log(asset)
@@ -641,10 +612,7 @@ $(document).ready(function () {
         for (var i = 0; i < assets.length; i++) {
             var tmp = {
                 username: assets[i].username,
-                category: {
-                    text: assets[i].category.text,
-                    value: assets[i].category.value
-                },
+                category:assets[i].category,
                 package: assets[i].package,
                 unit: assets[i].unit,
                 year: assets[i].year,

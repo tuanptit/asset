@@ -67,10 +67,10 @@ module.exports = function (app, passport) {
     app.get('/:cateId/properties', isLoggedInReal, assets.getPropertiesByCate);
     app.get('/properties/:uni_name', isLoggedInReal, assets.getPropertiesByUniName);
     app.delete('/property/:id/category/:cate', isLoggedIn, assets.deleteProperty);
-    app.put('/admin/assets/:id', isLoggedIn, assets.updateAsset)
-
+    app.put('/admin/assets/:id', isLoggedIn, assets.updateAsset);
+    app.put('/admin/property/:id', isLoggedInReal, assets.updateProperty);
     app.delete('/assets/:id', isLoggedIn, assets.deleteAsset);
-
+    app.get('/property/:id', isLoggedInReal, assets.getPropertyById);
     // Employee
     app.post('/employees', isLoggedIn, employees.addEmployee);
     app.put('/employees/:id', isLoggedIn, employees.editEmployee);
