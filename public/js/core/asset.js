@@ -10,6 +10,7 @@ $(document).ready(function () {
             extend: 'excelHtml5',
             text: 'Export All(*XLSX)',
             exportOptions: {
+                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13 ]
             },
             title: 'Data export'
         }, {
@@ -18,7 +19,8 @@ $(document).ready(function () {
             exportOptions: {
                 modifier: {
                     selected: true
-                }
+                },
+                columns: [ 0, 1, 2, 5 ]
             },
             title: 'Data export'
         },{
@@ -104,12 +106,20 @@ $(document).ready(function () {
             t.clear();
             asset.forEach(function (value, index) {
                 var mStatus = '';
+                var unit = '';
                 if(value.status == '1') {
                     mStatus = "<span class='label label-success'>Đang hoạt động</span>"
                 } else if(value.status == '2') {
                     mStatus = "<span class='label label-warning'>Đang sửa chữa</span>"
                 } else {
                     mStatus= "<span class='label label-danger'>Đang bảo hành</span>"
+                }
+                if(value.unit == "1") {
+                    unit = 'Cái'
+                } else if(value.unit=="2") {
+                    unit ='Bao'
+                } else {
+                    unit ='Thùng'
                 }
                 var category ="", route ="", system="", location="";
                 if(value.category!=null && value.category!="") {
@@ -125,7 +135,7 @@ $(document).ready(function () {
                     location = getPropertyById(value.location);
                 }
                 t.row.add([value.username, category, value.serial_number, route, system, location,
-                    mStatus, value.package, value.unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
+                    mStatus, value.package, unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
                 ]).draw(false);
             });
         }
