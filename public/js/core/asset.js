@@ -108,11 +108,11 @@ $(document).ready(function () {
                 var mStatus = '';
                 var unit = '';
                 if(value.status == '1') {
-                    mStatus = "<span class='label label-success'>Đang hoạt động</span>"
+                    mStatus = "<span class='label label-success'>Active</span>"
                 } else if(value.status == '2') {
-                    mStatus = "<span class='label label-warning'>Đang sửa chữa</span>"
+                    mStatus = "<span class='label label-warning'>Maintenance</span>"
                 } else {
-                    mStatus= "<span class='label label-danger'>Đang bảo hành</span>"
+                    mStatus= "<span class='label label-danger'>Inactive</span>"
                 }
                 if(value.unit == "1") {
                     unit = 'Cái'
