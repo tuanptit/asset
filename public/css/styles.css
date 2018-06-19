@@ -1327,7 +1327,7 @@ body.boxed {
 }
 
 .page-content {
-  margin: 0 25px 0 190px;
+  margin: 0 25px 0 140px;
   position: relative;
 }
 
@@ -1374,7 +1374,7 @@ body.boxed {
 /*===== Sidebars =====*/
 
 .sidebar {
-  width: 170px;
+  width: 120px;
   background-color: #3A4B55;
   position: absolute;
   top: 0;
