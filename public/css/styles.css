@@ -19,7 +19,7 @@
 /* Demo list */
 
 .navbar-header {
-  min-width: 145px !important;
+  min-width: 95px !important;
 }
 
 #tbl-info-employees_wrapper .datatable-header {
