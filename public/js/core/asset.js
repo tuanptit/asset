@@ -134,7 +134,7 @@ $(document).ready(function () {
                 if(value.location!=null && value.location!="") {
                     location = getPropertyById(value.location);
                 }
-                t.row.add([value.username, category, value.serial_number, route, system, location,
+                t.row.add([value.username, system, route, value.serial_number, category, location,
                     mStatus, value.package, unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
                 ]).draw(false);
             });
