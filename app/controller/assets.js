@@ -46,11 +46,9 @@ exports.addAsset = function (req, res) {
     if(route!=null && route!="") {
         mAsset.route = new ObjectId(route);
     }
-    if(route!=null && route!="") {
-        mAsset.route = new ObjectId(route);
+    if(system!=null && system!="") {
+        mAsset.system = new ObjectId(system);
     }
-
-    console.log(mAsset)
     Asset.findOne({
         $and: [
             {
