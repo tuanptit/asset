@@ -21,6 +21,10 @@
 .navbar-header {
   min-width: 95px !important;
 }
+.dataTables_processing {
+  top: 64px !important;
+  z-index: 11000 !important;
+}
 
 #tbl-info-employees_wrapper .datatable-header {
   display: none;

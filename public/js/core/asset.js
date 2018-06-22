@@ -6,6 +6,11 @@ $(document).ready(function () {
         "pageLength": 50,
         "scrollX": true,
         dom: 'Bfrtip',
+        'bProcessing': true,
+        "language": {
+            "emptyTable": "Chờ",
+            "processing": "DataTables is currently busy"
+        },
         buttons: [{
             extend: 'excelHtml5',
             text: 'Export All(*XLSX)',
