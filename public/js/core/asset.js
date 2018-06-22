@@ -10,7 +10,7 @@ $(document).ready(function () {
             extend: 'excelHtml5',
             text: 'Export All(*XLSX)',
             exportOptions: {
-                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13 ]
+                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15 ]
             },
             title: 'Data export'
         }, {
@@ -121,7 +121,7 @@ $(document).ready(function () {
                 } else {
                     unit ='Thùng'
                 }
-                var category ="", route ="", system="", location="";
+                var category ="", route ="", system="", location="", use="", manager="";
                 if(value.category!=null && value.category!="") {
                     category = getPropertyById(value.category);
                 }
@@ -134,8 +134,13 @@ $(document).ready(function () {
                 if(value.location!=null && value.location!="") {
                     location = getPropertyById(value.location);
                 }
+                if(value.manager!=null && value.manager!=""){
+                    // manager =
+                }
+                console.log(value)
                 t.row.add([value.username, system, route, value.serial_number, category, location,
-                    mStatus, value.package, unit,value.quantity, value.year, value.brand, value.country, value.note ,value.edit, value.delete
+                    mStatus, value.package, unit,value.quantity, value.year, value.brand, value.country,
+                    value.note ,manager, use, value.edit, value.delete
                 ]).draw(false);
             });
         }
@@ -160,7 +165,7 @@ $(document).ready(function () {
         });
         return name;
     }
-    t.columns( [7, 8,9,10,11,12,13 ] ).visible( false, false );
+    t.columns( [7, 8,9,10,11,12,13,14,15 ] ).visible( false, false );
     // t.buttons().container()
     //     .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
 
@@ -701,6 +706,8 @@ $(document).ready(function () {
             });
         }
     }
+
+
 });
 
 //----------------------------------------------exception data----------------------------------------------------//

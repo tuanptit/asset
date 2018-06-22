@@ -653,36 +653,10 @@ exports.uploadFile = function (req, res) {
         try {
             var workbook = XLSX.readFile(req.file.path);
             var sheet_name_list = workbook.SheetNames;
-            sheet_name_list.forEach(function (y) {
-                var worksheet = workbook.Sheets[y];
-                var headers = {};
-                var data = [];
-                for (z in worksheet) {
-                    if (z[0] === '!') continue;
-
-                    //parse out the column, row, and value
-                    var col = z.substring(0, 1);
-                    var row = parseInt(z.substring(1));
-                    var value = worksheet[z].v;
-
-                    //store header names
-                    if (row == 1) {
-                        headers[col] = value;
-                        continue;
-                    }
-
-                    if (!data[row])
-                        data[row] = {};
-                    data[row][headers[col]] = value;
-                }
-                //drop those first two rows which are empty
-                data.shift();
-                data.shift();
-                var totalDoc = data.length;
-                var result = [];
-                console.log(data)
-                async.eachSeries(data, 
-                    function (mAsset, callback) {
+            var data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+            var result = [];
+            async.eachSeries(data,
+                function (mAsset, callback) {
                     async.waterfall([
                         function (cb) {
                             insertAsset(mAsset, function (err, asset) {
@@ -695,23 +669,23 @@ exports.uploadFile = function (req, res) {
                             }, function (err, sAsset) {
                                 if (!err && !sAsset && asset.username !="" && asset.username!=null) {
                                     asset.save(function (err, newAsset) {
-                                        cb(null, newAsset)
+                                        cb(null, newAsset, sAsset)
                                     })
                                 } else {
-                                    cb(null,null)
+                                    cb(null,null,sAsset)
                                 }
                             });
                         }
-                    ], function (err, newAsset) {
+                    ], function (err, newAsset, sAsset) {
                         if(newAsset) {
                             result.push({
                                 code: 0,
                                 status: newAsset.username+": Thêm tài sản thành công"
                             })
-                        } else {
+                        } else if(sAsset)  {
                             result.push({
                                 code: 1,
-                                status: "LỖI - "+mAsset.serial_number+" Serial Number đã tồn tại"
+                                status: "LỖI - "+sAsset.serial_number+" Serial Number đã tồn tại"
                             })
                         }
                         callback();
@@ -729,7 +703,6 @@ exports.uploadFile = function (req, res) {
                         });
                     }
                 })
-            });
 
         } catch (e) {
             console.log(e)
@@ -762,48 +735,37 @@ var upload = multer({ //multer settings
 var insertAsset = function (mAsset, callback) {
     var newAsset = new Asset({
         username: "",
-        category: {
-            text: "",
-            value: ""
-        },
         package: "",
         unit: "",
         year: "",
         serial_number: "",
         brand: "",
         country: "",
-        manager: {
-            text: "",
-            value: ""
-        },
-        use: {
-            text: "",
-            value: ""
-        },
-        location: {
-            text: "",
-            value: ""
-        },
         status: "",
         note: "",
         quantity: ""
     });
-    if (mAsset.name !=null && mAsset!="") newAsset.username = mAsset.name
-    if (mAsset.package.length > 0) newAsset.package = mAsset.package
-    if (mAsset.unit.length > 0) newAsset.unit = mAsset.unit
-    if (mAsset.quantity.length > 0) newAsset.quantity = mAsset.quantity
-    if (mAsset.serial_number.length > 0) newAsset.serial_number = mAsset.serial_number
-    if (mAsset.serial_number.length > 0) newAsset.serial_number = mAsset.serial_number
-    if (mAsset.year.length > 0) newAsset.year = mAsset.year
-    if (mAsset.brand.length > 0) newAsset.brand = mAsset.brand
-    if (mAsset.country.length > 0) newAsset.country = mAsset.country
-    if (mAsset.status.toUpperCase() == 'ĐANG HOẠT ĐỘNG')
+    if (mAsset["Tên tài sản"] !=null && mAsset["Tên tài sản"]!="") newAsset.username = mAsset["Tên tài sản"]
+    if (mAsset["Gói thầu"] !=null && mAsset["Gói thầu"]!="") newAsset.package = mAsset["Gói thầu"]
+    if (mAsset["Đơn vị tính"]!=null && mAsset["Đơn vị tính"]!="") newAsset.unit = mAsset["Đơn vị tính"]
+    if (mAsset["Số lượng"]!=null && mAsset["Số lượng"]!="") newAsset.quantity = mAsset["Số lượng"]
+    if (mAsset["Serial Number"]!=null && mAsset["Serial Number"]!="") newAsset.serial_number = mAsset["Serial Number"]
+    if (mAsset["Năm sử dụng"]!=null && mAsset["Năm sử dụng"]!="") newAsset.year = mAsset["Năm sử dụng"]
+    if (mAsset["Hãng sản xuất"]!=null && mAsset["Hãng sản xuất"]!="") newAsset.brand = mAsset["Hãng sản xuất"]
+    if (mAsset["Nước sản xuất"]!=null && mAsset["Nước sản xuất"]!="") newAsset.country = mAsset["Nước sản xuất"]
+    if (mAsset["Trạng thái"].toUpperCase()== 'ACTIVE')
         newAsset.status = 1;
-    else if (mAsset.status.toUpperCase() == 'ĐANG SỬA CHỮA')
+    else if (mAsset["Trạng thái"] == 'MAINTENANCE')
         newAsset.status = 2;
     else
         newAsset.status = 3;
-    // console.log(mAsset)
+
+    if(mAsset["Tuyến"]!=null &&mAsset["Tuyến"]!="") mAsset.route = mAsset["Tuyến"];
+    if(mAsset["Vị trí trên hệ thống"]!=null && mAsset["Vị trí trên hệ thống"]!="" ) mAsset.system = mAsset["Vị trí trên hệ thống"];
+    if(mAsset["Hệ thống thiết bị"]!=null &&mAsset["Hệ thống thiết bị"]!="" ) mAsset.category = mAsset["Hệ thống thiết bị"];
+    if(mAsset["Vị trí lắp đặt"]!=null &&mAsset["Vị trí lắp đặt"]!="" ) mAsset.location = mAsset["Vị trí lắp đặt"];
+    if(mAsset["Đơn vị quản lý"]!=null &&mAsset["Đơn vị quản lý"]!="" ) mAsset.manager = mAsset["Đơn vị quản lý"];
+    if(mAsset["Đơn vị sử dụng"]!=null &&mAsset["Đơn vị sử dụng"]!="" ) mAsset.use = mAsset["Đơn vị sử dụng"];
 
     var initCate = new Promise(function (resolve, reject) {
         getPropertyByName(mAsset.category, 'category', function (err, property) {
@@ -811,14 +773,9 @@ var insertAsset = function (mAsset, callback) {
                 reject(err)
             }
             else if (property) {
-                newAsset.category.text = property.name;
-                newAsset.category.value = property.id;
-                resolve('success');
-            } else {
-                newAsset.category.text = "";
-                newAsset.category.value = ""
-                resolve('success');
+                newAsset.category = property.id;
             }
+            resolve('success');
         });
     });
 
@@ -828,31 +785,22 @@ var insertAsset = function (mAsset, callback) {
                 reject(err)
             }
             else if (property) {
-                newAsset.manager.text = property.name;
-                newAsset.manager.value = property.id;
-                resolve('success');
-            } else {
-                newAsset.manager.text = "";
-                newAsset.manager.value = "";
-                resolve('success');
+                newAsset.manager = property.id;
             }
+            resolve('success');
+
         });
     })
 
     var initUse = new Promise(function (resolve, reject) {
-        getPropertyByName(mAsset.use, 'user', function (err, property) {
+        getPropertyByName(mAsset.use, 'use', function (err, property) {
             if (err) {
                 reject(err)
             }
             else if (property) {
-                newAsset.use.text = property.name;
-                newAsset.use.value = property.id;
-                resolve('success');
-            } else {
-                newAsset.use.text = ""
-                newAsset.use.value = "";
-                resolve('success');
+                newAsset.use = property.id;
             }
+            resolve('success');
         });
     });
 
@@ -862,17 +810,39 @@ var insertAsset = function (mAsset, callback) {
                 reject(err)
             }
             else if (property) {
-                newAsset.location.text = property.name;
-                newAsset.location.value = property.id;
-                resolve('success');
-            } else {
-                newAsset.location.text = "";
-                newAsset.location.value = "";
-                resolve('success');
+                newAsset.location = property.id;
             }
+            resolve('success');
         });
     });
-    Promise.all([initCate, initManager, initUse, initLocation]).then(function (resolve) {
+
+    var initSystem = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.system, 'system', function (err, property) {
+            console.log('system')
+            if (err) {
+                reject(err)
+            }
+            else if (property) {console.log(property)
+                newAsset.system = property.id;
+            }
+            resolve('success');
+        });
+    });
+    var initRoute = new Promise(function (resolve, reject) {
+        getPropertyByName(mAsset.route, 'route', function (err, property) {
+            console.log('route')
+            if (err) {
+                reject(err)
+            }
+            else if (property) {
+                console.log(property)
+                newAsset.route = property.id;
+            }
+            resolve('success');
+        });
+    });
+    Promise.all([initCate, initManager, initUse, initLocation, initRoute, initSystem]).then(function (resolve) {
+        console.log(newAsset)
         return callback(null, newAsset);
     }).catch(function (err) {
         return callback(resolve, null);
@@ -887,26 +857,31 @@ var getPropertyByName = function (name, uni_name, callback) {
         if (err) {
             callback(err, null)
         } else {
-            Property.findOne({
-                $and: [
-                    {
-                        _id: {
-                            $in: category.properties
+            if(category) {
+                Property.findOne({
+                    $and: [
+                        {
+                            _id: {
+                                $in: category.properties
+                            }
+                        },
+                        {
+                            name: {
+                                $eq: name
+                            }
                         }
-                    },
-                    {
-                        name: {
-                            $eq: name
-                        }
-                    }
-                ]
-            }, function (err, property) {
-                if (err) callback(err, null)
-                else callback(null, property)
-            })
+                    ]
+                }, function (err, property) {
+                    if (err) callback(err, null)
+                    else callback(null, property)
+                })
+            } else {
+                console.log('kooooo')
+            }
         }
     })
 }
+
 var insertProperty = function (propertyName, categoryId, callback) {
     var newProperty = new Property({
         name: propertyName
