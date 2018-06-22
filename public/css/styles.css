@@ -22,8 +22,7 @@
   min-width: 95px !important;
 }
 .dataTables_processing {
-  top: 64px !important;
-  z-index: 11000 !important;
+  z-index: 3000;
 }
 
 #tbl-info-employees_wrapper .datatable-header {

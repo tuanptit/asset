@@ -6,10 +6,12 @@ $(document).ready(function () {
         "pageLength": 50,
         "scrollX": true,
         dom: 'Bfrtip',
-        'bProcessing': true,
+        "processing": true,
         "language": {
-            "emptyTable": "Chờ",
-            "processing": "DataTables is currently busy"
+            "emptyTable": "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\"\n" +
+            "  aria-valuenow=\"40\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:100%\">\n" +
+            "    Please wait...\n" +
+            "  </div>"
         },
         buttons: [{
             extend: 'excelHtml5',
