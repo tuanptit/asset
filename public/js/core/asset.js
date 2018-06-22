@@ -238,7 +238,7 @@ $(document).ready(function () {
                     $("#myUpload").modal("hide");
                     getAllAssets();
 
-                    showNoti(4,"Import thành công!")
+                    showNoti(2,"Upload thành công! Đang xử lý...")
                 }
             });
         })
