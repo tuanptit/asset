@@ -3,7 +3,7 @@ $(document).ready(function () {
     var t = $("#tbl-info-asset").DataTable({
         "retrieve": true,
         "lengthMenu": [5, 10, 50, 100],
-        "pageLength": 50,
+        "pageLength": 10,
         "scrollX": true,
         dom: 'Bfrtip',
         "processing": true,
