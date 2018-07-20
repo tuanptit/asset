@@ -56,7 +56,7 @@ module.exports = function (app, passport) {
     });
 
     // Category
-    app.get('/admin/assets',isLoggedInReal, assets.getAllAsset);
+    app.get('/admin/assets', assets.getAllAsset);
     app.get('/admin/employees', isLoggedIn,employees.getAllEmployee);
     app.get('/categories', isLoggedIn, assets.getCategory);
     app.get('/manager', isLoggedIn, assets.getManager);
