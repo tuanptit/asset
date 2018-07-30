@@ -89,31 +89,75 @@ exports.addAsset = function (req, res) {
 }
 
 exports.getAllAsset = function (req, res) {
-    Asset.find({}, function (err, assets) {
+    Asset.find().populate('manager').populate('use').populate('location')
+        .populate('route').populate('system').populate('category').exec(function (err, assets) {
         var list = [];
+        console.log(assets)
         for (var i = 0; i < assets.length; i++) {
             var tmp = {
                 username: assets[i].username,
-                category: assets[i].category,
+                category: {
+                    name: '',
+                    id:''
+                },
                 package: assets[i].package,
                 unit: assets[i].unit,
                 year: assets[i].year,
                 serial_number: assets[i].serial_number,
                 brand: assets[i].brand,
                 country: assets[i].country,
-                manager: assets[i].manager,
-                use: assets[i].use,
-                location: assets[i].location,
+                manager:{
+                 name: '',
+                 id: ''
+                },
+                use: {
+                    name:'',
+                    id:''
+                },
+                location: {
+                    name: '',
+                    id: ''
+                },
 
-                route: assets[i].route,
+                route: {
+                    name:'',
+                    id:''
+                },
 
-                system: assets[i].system,
+                system: {
+                    name: '',
+                    id:''
+                },
 
                 status: assets[i].status,
                 note: assets[i].note,
                 id: assets[i].id,
                 quantity: assets[i].quantity,
                 history: assets[i].history
+            }
+            if(assets[i].category!=null) {
+                tmp.category.name = assets[i].category.name;
+                tmp.category.id = assets[i].category._id;
+            }
+            if(assets[i].manager!=null) {
+                tmp.manager.name = assets[i].manager.name;
+                tmp.manager.id = assets[i].manager._id;
+            }
+            if(assets[i].use!=null) {
+                tmp.use.name = assets[i].use.name;
+                tmp.use.id = assets[i].use._id;
+            }
+            if(assets[i].location!=null ) {
+                tmp.location.name = assets[i].location.name;
+                tmp.location.id = assets[i].location._id;
+            }
+            if(assets[i].route!=null ) {
+                tmp.route.name = assets[i].route.name;
+                tmp.route.id = assets[i].route._id;
+            }
+            if(assets[i].system!=null) {
+                tmp.system.name = assets[i].system.name;
+                tmp.system.id = assets[i].system._id;
             }
             list.push(tmp);
         }

@@ -1,18 +1,38 @@
 $(document).ready(function () {
 
     var t = $("#tbl-info-asset").DataTable({
-        "retrieve": true,
-        "lengthMenu": [5, 10, 50, 100],
-        "pageLength": 10,
-        "scrollX": true,
-        dom: 'Bfrtip',
-        "processing": true,
-        "language": {
-            "emptyTable": "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\"\n" +
-            "  aria-valuenow=\"40\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:100%\">\n" +
-            "    Please wait...\n" +
-            "  </div>"
+        ajax: {
+            url: "/admin/assets",
+            dataSrc: 'result'
         },
+        columns: [
+            { data: "username"},
+            { data: "system.name"},
+            { data: "route.name" },
+            { data: "serial_number"},
+            { data: "category.name" },
+            { data: "location.name" },
+            { data: "status" },
+            { data: "package" },
+            { data: "unit" },
+            { data: "quantity" },
+            { data: "year" },
+            { data: "brand" },
+            { data: "country" },
+            { data: "note" },
+            { data: "manager.name" },
+            { data: "use.name" },
+            { data: "command"}
+        ],
+        "processing": true,
+        columnDefs: [{
+            // puts a button in the last column
+            targets: [-1], render: function (data, type, row, meta) {
+                var ID = row['id'];
+                return "<a class ='btn-edit' asset-id='" + ID + "' href='#'><i class='icon-pencil'></i></a>"+
+                    "<a class ='btn-delete' asset-id='" + ID + "' href='#'><i class='icon-remove3' data-toggle='modal' data-target='#myModal'></i></a>";
+            }
+        }],
         buttons: [{
             extend: 'excelHtml5',
             text: 'Export All(*XLSX)',
@@ -20,41 +40,7 @@ $(document).ready(function () {
                 columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15 ]
             },
             title: 'Data export'
-        }, {
-            extend: 'excelHtml5',
-            text: 'Export selected(*XLSX)',
-            exportOptions: {
-                modifier: {
-                    selected: true
-                },
-                columns: [ 0, 1, 2, 5 ]
-            },
-            title: 'Data export'
-        },{
-            extend: 'pdfHtml5',
-            text: 'Export All(*PDF)',
-            exportOptions: {
-            },
-            title: 'Data export'
-        },{
-            extend: 'pdfHtml5',
-            text: 'Export selected(*PDF)',
-            exportOptions: {
-                modifier: {
-                    selected: true
-                }
-            },
-            title: 'Data export'
-        },{
-            extend: 'copyHtml5'
-        }
-        ],
-        select: {
-            style : "multi"
-        },
-        fnInitComplete:function() {
-            $('#tbl-info-asset tbody tr:eq(0)').click();
-        }
+        }]
     });
 
     var tbl_history = $('#tbl-asset-history').DataTable({
@@ -172,7 +158,7 @@ $(document).ready(function () {
         });
         return name;
     }
-    t.columns( [7, 8,9,10,11,12,13,14,15 ] ).visible( false, false );
+    t.columns( [7, 8,9,10,11,12,13,14 ] ).visible( false, false );
     // t.buttons().container()
     //     .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
 
@@ -236,7 +222,7 @@ $(document).ready(function () {
                     }, time+1000)
 
                     $("#myUpload").modal("hide");
-                    getAllAssets();
+                    // getAllAssets();
 
                     showNoti(2,"Upload thành công! Đang xử lý...")
                 }
@@ -256,11 +242,10 @@ $(document).ready(function () {
                         '                    <i class="icon-cancel-circle"></i> '+data.status+' ' +
                         '                </div>').fadeIn(1000);
                 }
-                }, 1000+ i*1000);
+            }, 1000+ i*1000);
         }
 
-        $(".btn-edit").unbind();
-        $(".btn-edit").click(function (event) {
+        $('#tbl-info-asset').on('click', '.btn-edit', function(){
             event.preventDefault();
             $("#div-tbl-info-asset").hide();
             $("#form-edit-asset").show();
@@ -278,9 +263,9 @@ $(document).ready(function () {
             }
         });
 
-        $(".btn-delete").unbind();
-        $(".btn-delete").click(function (e) {
-            e.preventDefault();
+        $('#tbl-info-asset').on('click', '.btn-delete', function(){
+            event.preventDefault();
+            console.log('aaaaaaaaaaa')
             var idAsset = $(this).attr("asset-id");
             $("#confirm").attr("asset-id", idAsset);
         });
@@ -378,13 +363,13 @@ $(document).ready(function () {
         getAllPropertiesOfCategory(asset,"select-route-edit", "route");
     }
 
-    
+
     function getAllPropertiesOfCategory(asset, element, url) {
         $.ajax('/properties/'+url, {
             method: "GET"
         }).success(function (res) {
             if (res.status == "success") {
-                var value = asset[url];
+                var id = asset[url].id;
                 var items = [];
                 items = res.result;
                 $('#'+element).find('option')
@@ -402,8 +387,7 @@ $(document).ready(function () {
                         text : item.name
                     }));
                 });
-                $('#'+element+' option[value="'+value+'"]').attr('selected','selected');
-
+                $('#'+element+' option[value="'+id+'"]').attr('selected','selected');
             } else {
                 console.log(res);
             }
@@ -619,7 +603,7 @@ $(document).ready(function () {
                 for (var i = 0; i < res.result.length; i++) {
                     asset.push(res.result[i]);
                 }
-                convertDataToAssetTable(asset);
+                //convertDataToAssetTable(asset);
             }
             else {
                 console.log(res.status);
@@ -655,7 +639,7 @@ $(document).ready(function () {
             }
             assetTmp.push(tmp);
         }
-        addAssetToTable(assetTmp);
+        //addAssetToTable(assetTmp);
     }
 
 
@@ -667,7 +651,7 @@ $(document).ready(function () {
         }).success(function (res) {
             if (res.status == "success") {
                 showNoti(4, "Xóa tài sản thành công!");
-                getAllAssets();
+                t.ajax.reload();
             }
         }).error(function (err) {
             console.log(err);

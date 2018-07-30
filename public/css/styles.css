@@ -24,7 +24,15 @@
 .dataTables_processing {
   z-index: 3000;
 }
-
+.btn-command td {
+  text-align: center;
+}
+tbody tr{
+  text-align: center;
+}
+thead th{
+  text-align: center;
+}
 #tbl-info-employees_wrapper .datatable-header {
   display: none;
 }
