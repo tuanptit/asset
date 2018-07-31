@@ -135,6 +135,14 @@ exports.getAllAsset = function (req, res) {
                 quantity: assets[i].quantity,
                 history: assets[i].history
             }
+
+            if(tmp.status == 1){
+                tmp.status = "<span class='label label-success'>Active</span>"
+            } else if( tmp.status == 2) {
+                tmp.status = "<span class='label label-warning'>Maintenance</span>"
+            } else {
+                tmp.status= "<span class='label label-danger'>Warranty</span>"
+            }
             if(assets[i].category!=null) {
                 tmp.category.name = assets[i].category.name;
                 tmp.category.id = assets[i].category._id;
