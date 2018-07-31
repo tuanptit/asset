@@ -5,6 +5,12 @@ $(document).ready(function () {
             url: "/admin/assets",
             dataSrc: 'result'
         },
+        "retrieve": true,
+        "lengthMenu": [5, 10, 50, 100],
+        "pageLength": 10,
+        "scrollX": true,
+        dom: 'Bfrtip',
+        "processing": true,
         columns: [
             { data: "username"},
             { data: "system.name"},
@@ -12,7 +18,6 @@ $(document).ready(function () {
             { data: "serial_number"},
             { data: "category.name" },
             { data: "location.name" },
-            { data: "status" },
             { data: "package" },
             { data: "unit" },
             { data: "quantity" },
@@ -22,8 +27,20 @@ $(document).ready(function () {
             { data: "note" },
             { data: "manager.name" },
             { data: "use.name" },
+            { data: "status" },
             { data: "command"}
         ],
+        buttons: [{
+            extend: 'excelHtml5',
+            text: 'Export',
+            exportOptions: {
+                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15 ]
+            },
+            title: 'Data export'
+        },{
+            extend: 'copyHtml5'
+        }],
+
         "processing": true,
         columnDefs: [{
             // puts a button in the last column
@@ -33,14 +50,7 @@ $(document).ready(function () {
                     "<a class ='btn-delete' asset-id='" + ID + "' href='#'><i class='icon-remove3' data-toggle='modal' data-target='#myModal'></i></a>";
             }
         }],
-        buttons: [{
-            extend: 'excelHtml5',
-            text: 'Export All(*XLSX)',
-            exportOptions: {
-                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15 ]
-            },
-            title: 'Data export'
-        }]
+
     });
 
     var tbl_history = $('#tbl-asset-history').DataTable({
@@ -158,7 +168,7 @@ $(document).ready(function () {
         });
         return name;
     }
-    t.columns( [7, 8,9,10,11,12,13,14 ] ).visible( false, false );
+    t.columns( [6,7, 8,9,10,11,12,13 ] ).visible( false, false );
     // t.buttons().container()
     //     .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
 
