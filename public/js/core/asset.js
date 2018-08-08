@@ -7,7 +7,7 @@ $(document).ready(function () {
         },
         "retrieve": true,
         "lengthMenu": [5, 10, 50, 100],
-        "pageLength": 10,
+        paging: false,
         "scrollX": true,
         dom: 'Bfrtip',
         "processing": true,
@@ -58,7 +58,7 @@ $(document).ready(function () {
     });
 
     function addTblHistory(asset) {
-        var history = asset.history;
+        var history = asset.history;x
         if(history.length !=0) {
             tbl_history.clear();
             history.forEach(function (value, index) {
