@@ -65,6 +65,7 @@ module.exports = function (app, passport) {
     app.get('/upcate', isLoggedIn, assets.getAllCategory);
     app.post('/property', isLoggedIn, assets.addProperty);
     app.get('/:cateId/properties', isLoggedInReal, assets.getPropertiesByCate);
+    app.get('/properties', isLoggedInReal, assets.getAllPropertiesAndCate);
     app.get('/properties/:uni_name', isLoggedInReal, assets.getPropertiesByUniName);
     app.delete('/property/:id/category/:cate', isLoggedIn, assets.deleteProperty);
     app.put('/admin/assets/:id', isLoggedIn, assets.updateAsset);

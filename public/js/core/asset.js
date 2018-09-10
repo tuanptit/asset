@@ -5,10 +5,9 @@ $(document).ready(function () {
             url: "/admin/assets",
             dataSrc: 'result'
         },
-        "retrieve": true,
+        "aaSorting": [],
         "lengthMenu": [5, 10, 50, 100],
         paging: false,
-        "scrollX": true,
         dom: 'Bfrtip',
         "processing": true,
         columns: [
@@ -40,23 +39,126 @@ $(document).ready(function () {
         },{
             extend: 'copyHtml5'
         }],
-
         "processing": true,
         columnDefs: [{
-            // puts a button in the last column
-            targets: [-1], render: function (data, type, row, meta) {
+            targets: [-1],
+            render: function (data, type, row, meta) {
                 var ID = row['id'];
                 return "<a class ='btn-edit' asset-id='" + ID + "' href='#'><i class='icon-pencil'></i></a>"+
                     "<a class ='btn-delete' asset-id='" + ID + "' href='#'><i class='icon-remove3' data-toggle='modal' data-target='#myModal'></i></a>";
             }
-        }],
+        },
+            { "orderable": false, "targets": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] }
+        ],
 
+    });
+    // fill
+    $('#sort-name').on('input',function () {
+        t.columns(0).search(this.value).draw();
+    });
+    // vi tri tren he thong
+    $.ajax('/properties/system', {
+        method: "GET"
+    }).success(function (res) {
+        if (res.status == "success") {
+            var result = res.result;
+            for(var i = 0; i<result.length; i++) {
+                $('#sort-system').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
+            }
+            $('#sort-system').on('change', function () {
+                t.columns(1).search( $('#sort-system').val()).draw();
+            });
+        } else {
+            console.log(res.status);
+        }
+    }).error(function (err) {
+        console.log(err);
+    });
+
+
+    // TUYEN
+
+    $.ajax('/properties/route', {
+        method: "GET"
+    }).success(function (res) {
+        if (res.status == "success") {
+            var result = res.result;
+            for(var i = 0; i<result.length; i++) {
+                $('#sort-route').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
+            }
+            $('#sort-route').on('change', function () {
+                t.columns(2).search( $('#sort-route').val()).draw();
+            });
+        } else {
+            console.log(res.status);
+        }
+    }).error(function (err) {
+        console.log(err);
+    });
+
+    $.ajax('/properties/category', {
+        method: "GET"
+    }).success(function (res) {
+        if (res.status == "success") {
+            var result = res.result;
+            for(var i = 0; i<result.length; i++) {
+                $('#sort-category').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
+            }
+            $('#sort-category').on('change', function () {
+                t.columns(4).search( $('#sort-category').val()).draw();
+            });
+        } else {
+            console.log(res.status);
+        }
+    }).error(function (err) {
+        console.log(err);
+    });
+
+    $.ajax('/properties/use', {
+        method: "GET"
+    }).success(function (res) {
+        if (res.status == "success") {
+            var result = res.result;
+            for(var i = 0; i<result.length; i++) {
+                $('#sort-use').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
+            }
+            $('#sort-use').on('change', function () {
+                var use = ($('#sort-use').val());
+                t.columns(14).search(use).draw();
+            });
+
+        } else {
+            console.log(res.status);
+        }
+    }).error(function (err) {
+        console.log(err);
+    });
+
+    $.ajax('/properties/location', {
+        method: "GET"
+    }).success(function (res) {
+        if (res.status == "success") {
+            var result = res.result;
+            for(var i = 0; i<result.length; i++) {
+                $('#sort-location').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
+            }
+            $('#sort-location').on('change', function () {
+                t.columns(5).search( $('#sort-location').val()).draw();
+            });
+        } else {
+            console.log(res.status);
+        }
+    }).error(function (err) {
+        console.log(err);
     });
 
     var tbl_history = $('#tbl-asset-history').DataTable({
         "retrieve": true
     });
 
+    $('#sort-serial').on('input', function () {
+        t.columns(3).search(this.value).draw();
+    })
     function addTblHistory(asset) {
         var history = asset.history;x
         if(history.length !=0) {
@@ -175,7 +277,7 @@ $(document).ready(function () {
     actionSideBar();
     function actionSideBar() {
         $("#li-admin-employee").attr("class", "");
-        $("#li-admin-commission").attr("class", "active");
+        $("#li-admin-asset").attr("class", "active");
         $("#li-admin-add-state").attr("class", "");
         $("#li-admin-statistical").attr("class", "");
     }
@@ -187,11 +289,11 @@ $(document).ready(function () {
             if ($('#btn-add-asset').text() == "Thêm") {
                 bindActionForm();
                 setYear();
-                $("#div-tbl-info-asset").hide();
+                $("#tbl-info-asset_wrapper").hide();
                 $("#form-add-asset").show();
                 $('#btn-add-asset').text("Quay lại");
             } else {
-                $("#div-tbl-info-asset").show();
+                $("#tbl-info-asset_wrapper").show();
                 if ($("#form-add-asset").css("display") == "block") {
                     $("#form-add-asset").hide();
                     $("#btn-add-asset").text("Thêm");

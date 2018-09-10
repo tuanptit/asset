@@ -292,6 +292,47 @@ exports.getPropertiesByCate = function (req, res) {
     });
 }
 
+exports.getAllPropertiesAndCate = function (req, res) {
+    Category.find({},
+        function (err, categories) {
+            if (!categories || err) {
+                res.json({
+                    status: 'fail'
+                });
+            } else {
+                var result = [];
+                async.eachSeries(categories,
+                    function (mCategory, callback ) {
+                        async.waterfall([
+                            function (cb) {
+                                Property.find({
+                                    _id: mCategory.properties
+                                }, function (err, list) {
+                                    if(!err){
+                                        console.log(list)
+                                        cb(null, list)
+                                    }
+                                })
+                            }
+                        ],function (err, list) {
+                            var tmp = {};
+                            tmp.category = mCategory;
+                            tmp.properties = list;
+                            result.push(tmp);
+                            callback();
+                        })
+                    }, function (err) {
+                        if(!err) {
+                            res.json({
+                                code: 1,
+                                result: result
+                            })
+                        }
+                    });
+            }
+        });
+}
+
 exports.getPropertiesByUniName = function (req, res) {
     Category.findOne({
         uni_name: req.params.uni_name

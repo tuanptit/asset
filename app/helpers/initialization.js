@@ -9,7 +9,7 @@ module.exports = function () {
                 username: 'admin',
                 role: 1,
                 password: 'admin'
-            })
+            });
             admin.save();
         }
     });
@@ -85,5 +85,4 @@ module.exports = function () {
             cate.save();
         }
     });
-
 }
