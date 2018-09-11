@@ -160,7 +160,8 @@ $(document).ready(function () {
         t.columns(3).search(this.value).draw();
     })
     function addTblHistory(asset) {
-        var history = asset.history;x
+        console.log('aaaaaaaa')
+        var history = asset.history;
         if(history.length !=0) {
             tbl_history.clear();
             history.forEach(function (value, index) {
@@ -359,7 +360,7 @@ $(document).ready(function () {
 
         $('#tbl-info-asset').on('click', '.btn-edit', function(){
             event.preventDefault();
-            $("#div-tbl-info-asset").hide();
+            $("#tbl-info-asset_wrapper").hide();
             $("#form-edit-asset").show();
             $("#ul-link").append("<li class='active'><a href='#'>Sửa</a></li>");
             $("#btn-add-asset").text("Quay lại");
