@@ -80,7 +80,11 @@ $(document).ready(function () {
                 $('#sort-system').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
             }
             $('#sort-system').on('change', function () {
-                t.columns(1).search( "^"+$('#sort-system').val(), true, false, true).draw();
+                if($('#sort-system').val() != 0) {
+                    t.columns(1).search( "^" + $('#sort-system').val() + "$", true, false).draw();
+                } else {
+                    t.columns(1).search("").draw();
+                }
             });
         } else {
             console.log(res.status);
