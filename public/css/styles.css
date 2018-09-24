@@ -1347,13 +1347,22 @@ body.boxed {
 .sidebar-toggle {
   display: none;
 }
+.icon-remove3 {
+  color: #de3d2a;
+  margin-left: 10px;
+}
+#tbl-info-asset_wrapper tr td {
+  height: 20px !important;
+}
 .page-title h3 {
   padding: 15px 0;
 }
 .navbar-brand {
   padding: 20px 10px !important;
 }
-
+tfoot tr th {
+  text-align: center;
+}
 .sidebar-narrow .page-content {
   margin-left: 79px;
 }

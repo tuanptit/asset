@@ -3876,7 +3876,7 @@ fieldset[disabled] .btn-info.active {
 .table > tbody > tr > td, 
 .table > tfoot > tr > td {
   vertical-align: middle;
-  padding: 10px 12px;
+  padding: 7px 12px;
 }
 
 .table-condensed > thead > tr > th, 
@@ -3967,7 +3967,7 @@ fieldset[disabled] .btn-info.active {
 .table-striped > tbody > tr:nth-child(odd) > th,
 .table-hover > tbody > tr:hover > td, 
 .table-hover > tbody > tr:hover > th {
-  background-color: #fcfcfc;
+  background-color: #f5f5f5;
 }
 
 
