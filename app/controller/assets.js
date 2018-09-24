@@ -145,10 +145,10 @@ exports.getAllAsset = function (req, res) {
             // } else {
             //     tmp.status= "<span class='label label-info'>Unuse</span>"
             // }
-            // if(assets[i].category!=null) {
-            //     tmp.category.name = assets[i].category.name;
-            //     tmp.category.id = assets[i].category._id;
-            // }
+            if(assets[i].category!=null) {
+                tmp.category.name = assets[i].category.name;
+                tmp.category.id = assets[i].category._id;
+            }
             if(assets[i].manager!=null) {
                 tmp.manager.name = assets[i].manager.name;
                 tmp.manager.id = assets[i].manager._id;
