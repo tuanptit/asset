@@ -136,17 +136,19 @@ exports.getAllAsset = function (req, res) {
                 history: assets[i].history
             }
 
-            if(tmp.status == 1){
-                tmp.status = "<span class='label label-success'>Active</span>"
-            } else if( tmp.status == 2) {
-                tmp.status = "<span class='label label-warning'>Maintenance</span>"
-            } else {
-                tmp.status= "<span class='label label-danger'>Warranty</span>"
-            }
-            if(assets[i].category!=null) {
-                tmp.category.name = assets[i].category.name;
-                tmp.category.id = assets[i].category._id;
-            }
+            // if(tmp.status == 1){
+            //     tmp.status = "<span class='label label-success'>Active</span>"
+            // } else if( tmp.status == 2) {
+            //     tmp.status = "<span class='label label-warning'>Maintenance</span>"
+            // } else if(tmp.status == 3) {
+            //     tmp.status= "<span class='label label-danger'>Warranty</span>"
+            // } else {
+            //     tmp.status= "<span class='label label-info'>Unuse</span>"
+            // }
+            // if(assets[i].category!=null) {
+            //     tmp.category.name = assets[i].category.name;
+            //     tmp.category.id = assets[i].category._id;
+            // }
             if(assets[i].manager!=null) {
                 tmp.manager.name = assets[i].manager.name;
                 tmp.manager.id = assets[i].manager._id;

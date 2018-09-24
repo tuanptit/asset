@@ -1338,8 +1338,20 @@ body.boxed {
 }
 
 .page-content {
-  margin: 0 25px 0 190px;
+  margin: 0 20px 0 80px;
   position: relative;
+}
+.navbar-header {
+  margin: 0 !important;
+}
+.sidebar-toggle {
+  display: none;
+}
+.page-title h3 {
+  padding: 15px 0;
+}
+.navbar-brand {
+  padding: 20px 10px !important;
 }
 
 .sidebar-narrow .page-content {
@@ -1379,13 +1391,15 @@ body.boxed {
 }
 
 
-
+.user-menu {
+  display: none;
+}
 
 
 /*===== Sidebars =====*/
 
 .sidebar {
-  width: 170px;
+  width: 60px;
   background-color: #3A4B55;
   position: absolute;
   top: 0;
@@ -1497,7 +1511,7 @@ ul li ul {
 }
 .navigation > li > a > i {
   font-size: 16px;
-  position: absolute;
+  position: static;
   right: 14px;
   top: 13px;
   opacity: 0.8;

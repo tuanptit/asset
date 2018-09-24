@@ -40,14 +40,28 @@ $(document).ready(function () {
             extend: 'copyHtml5'
         }],
         "processing": true,
-        columnDefs: [{
-            targets: [-1],
-            render: function (data, type, row, meta) {
-                var ID = row['id'];
-                return "<a class ='btn-edit' asset-id='" + ID + "' href='#'><i class='icon-pencil'></i></a>"+
-                    "<a class ='btn-delete' asset-id='" + ID + "' href='#'><i class='icon-remove3' data-toggle='modal' data-target='#myModal'></i></a>";
-            }
-        },
+        columnDefs: [
+            {
+                targets: [-1],
+                render: function (data, type, row, meta) {
+                    var ID = row['id'];
+                    return "<a class ='btn-edit' asset-id='" + ID + "' href='#'><i class='icon-pencil'></i></a>"+
+                        "<a class ='btn-delete' asset-id='" + ID + "' href='#'><i class='icon-remove3' data-toggle='modal' data-target='#myModal'></i></a>";
+                }
+            },
+
+            {
+                targets: [15],
+                render: function (data, type, row, meta) {
+                    switch(data) {
+                        case '2' : return "<span class='label label-warning'>Maintenance</span>"; break;
+                        case '3'  : return "<span class='label label-danger'>Warranty</span>";
+                        case '4'  : return "<span class='label label-info'>Unuse</span>";
+                        default  : return "<span class='label label-success'>Active</span>";
+                    }
+                }
+            },
+
             { "orderable": false, "targets": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] }
         ],
 
@@ -66,7 +80,7 @@ $(document).ready(function () {
                 $('#sort-system').append('<option value="'+result[i].name+'">'+result[i].name+'</option>');
             }
             $('#sort-system').on('change', function () {
-                t.columns(1).search( $('#sort-system').val()).draw();
+                t.columns(1).search( "^"+$('#sort-system').val(), true, false, true).draw();
             });
         } else {
             console.log(res.status);
@@ -455,6 +469,7 @@ $(document).ready(function () {
 
 
     function addDataToEditForm(asset) {
+        console.log(asset)
         setEditYear();
         $("#username-edit").val(asset.username);
         $("#goi-thau-edit").val(asset.package);
