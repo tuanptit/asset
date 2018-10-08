@@ -27,6 +27,15 @@
 .btn-command td {
   text-align: center;
 }
+table.dataTable.stripe tbody tr.odd:hover,
+table.dataTable tbody tr:hover
+{
+  background-color:#71d1eb !important;
+}
+.odd:hover
+{
+  background-color:#71d1eb !important;
+}
 tbody tr{
   text-align: center;
 }

@@ -152,6 +152,24 @@ $(document).ready(function () {
         console.log(err);
     });
 
+    $('#tbl-info-asset tbody').on('click', 'tr', function () {
+        var id = $(this).find('td:last a').attr('asset-id');
+        event.preventDefault();
+        $("#tbl-info-asset_wrapper").hide();
+        $("#form-edit-asset").show();
+        $("#ul-link").append("<li class='active'><a href='#'>Sửa</a></li>");
+        $("#btn-add-asset").text("Quay lại");
+
+        for (var i = 0; i < asset.length; i++) {
+            if (asset[i].id == id) {
+                $("#btn-edit-asset").attr("asset-id", asset[i].id);
+                addDataToEditForm(asset[i]);
+                addTblHistory(asset[i]);
+                break;
+            }
+        }
+    })
+
     $.ajax('/properties/location', {
         method: "GET"
     }).success(function (res) {
