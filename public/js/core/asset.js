@@ -56,7 +56,7 @@ $(document).ready(function () {
                     switch(data) {
                         case '2' : return "<span class='label label-warning'>Maintenance</span>"; break;
                         case '3'  : return "<span class='label label-danger'>Warranty</span>";
-                        case '4'  : return "<span class='label label-info'>Unuse</span>";
+                        case '4'  : return "<span class='label label-info'>Not Use</span>";
                         default  : return "<span class='label label-success'>Active</span>";
                     }
                 }
@@ -176,9 +176,17 @@ $(document).ready(function () {
 
     $('#sort-serial').on('input', function () {
         t.columns(3).search(this.value).draw();
-    })
+    });
+
+    // sort trang thai
+
+    $('#sort-status').on('change', function () {
+        t.columns(15).search($('#sort-status option:selected').text()).draw();
+    });
+
+
+
     function addTblHistory(asset) {
-        console.log('aaaaaaaa')
         var history = asset.history;
         if(history.length !=0) {
             tbl_history.clear();
@@ -394,6 +402,11 @@ $(document).ready(function () {
             }
         });
 
+        $('#tbl-info-asset tr').on('click', function () {
+            console.log("a");
+            var id = $('#tbl-info-asset tr td:last-child a').attr('asset-id');
+            console.log(id);
+        });
         $('#tbl-info-asset').on('click', '.btn-delete', function(){
             event.preventDefault();
             console.log('aaaaaaaaaaa')

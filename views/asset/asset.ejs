@@ -183,7 +183,7 @@
                                 <th>Ghi chú</th>
                                 <th>Đơn vị quản lý</th>
                                 <th>Đơn vị sử dụng</th>
-                                <th rowspan="2">Trạng thái</th>
+                                <th>Trạng thái</th>
                                 <th rowspan="2" class="btn-command">Command</th>
                             </tr>
 
@@ -225,6 +225,15 @@
                                 <th>
                                     <select id="sort-use" class="form-control">
                                         <option></option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <select id="sort-status" class="form-control">
+                                        <option value="0"></option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Maintenance</option>
+                                        <option value="3">Warranty</option>
+                                        <option value="4">Not Use</option>
                                     </select>
                                 </th>
 
@@ -667,6 +676,8 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+
+
                                                 </tbody>
                                             </table>
                                         </div>
